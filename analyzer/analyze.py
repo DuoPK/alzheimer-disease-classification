@@ -7,31 +7,23 @@ import seaborn as sns
 
 
 class AlzheimerDatasetAnalyzer:
-    def __init__(self, file_path):
+    def __init__(self, file_path, selected_features):
         """
         Initializes the dataset analyzer by loading data from a CSV file.
 
         Parameters:
         file_path (str): Path to the dataset CSV file.
         """
+        self.selected_features = selected_features
         self.df = pd.read_csv(file_path)
-
-        self.selected_features = [
-            "Age", "Gender", "EducationLevel", "BMI", "Smoking", "AlcoholConsumption",
-            "PhysicalActivity", "DietQuality", "SleepQuality", "FamilyHistoryAlzheimers",
-            "CardiovascularDisease", "Diabetes", "Depression", "HeadInjury", "Hypertension",
-            "SystolicBP", "DiastolicBP", "CholesterolTotal", "CholesterolLDL", "CholesterolHDL",
-            "CholesterolTriglycerides", "MMSE", "FunctionalAssessment", "MemoryComplaints",
-            "BehavioralProblems", "ADL", "Confusion", "Disorientation", "PersonalityChanges",
-            "DifficultyCompletingTasks", "Forgetfulness", "Diagnosis",  # Target variable
-            "Caucasian", "African_American", "Asian", "Other"  # One-hot encoded ethnicity
-        ]
+        self.df = self.df[self.selected_features]
 
     def preprocess_data(self):
         """
         Runs all preprocessing steps
         """
-        self.one_hot_encode_ethnicity()
+        if "Ethnicity" in self.df.columns:
+            self.one_hot_encode_ethnicity()
         self.validate_data_ranges()
 
     def one_hot_encode_ethnicity(self):
@@ -50,7 +42,10 @@ class AlzheimerDatasetAnalyzer:
         # Merge with original DataFrame and drop 'Ethnicity'
         self.df = pd.concat([self.df.drop(columns=["Ethnicity"]), ethnicity_encoded], axis=1)
 
-        print("\n✅ One-hot encoding for Ethnicity completed. New columns added:", list(ethnicity_encoded.columns))
+        # Update selected features after one-hot encoding
+        # self.selected_features = [feature for feature in self.selected_features if feature != "Ethnicity"] + list(ethnicity_encoded.columns)
+
+        print("\nOne-hot encoding for Ethnicity completed. New columns added:", list(ethnicity_encoded.columns))
 
     def analyze_classes(self):
         """
@@ -74,7 +69,7 @@ class AlzheimerDatasetAnalyzer:
         Checks for missing values in the dataset.
         Displays the number of missing values per feature.
         """
-        missing_values = self.df[self.selected_features].isnull().sum()
+        missing_values = self.df.isnull().sum()
         print("\nMissing values in the dataset:")
         print(missing_values[missing_values > 0])
 
@@ -82,8 +77,8 @@ class AlzheimerDatasetAnalyzer:
         """
         Prints basic descriptive statistics for the selected numerical features.
         """
-        print("\nDataset statistics for selected features:")
-        print(self.df[self.selected_features].describe())
+        print("\nDataset statistics:")
+        print(self.df.describe())
 
     def validate_data_ranges(self):
         """
@@ -111,6 +106,8 @@ class AlzheimerDatasetAnalyzer:
 
         # Check numeric ranges
         for feature, (min_val, max_val) in valid_ranges.items():
+            if feature not in self.df.columns:
+                continue
             if not self.df[feature].between(min_val, max_val).all():
                 issues[feature] = f"Values out of range (expected: {min_val}-{max_val})."
 
@@ -124,6 +121,8 @@ class AlzheimerDatasetAnalyzer:
         ]
 
         for feature in binary_features:
+            if feature not in self.df.columns:
+                continue
             if not self.df[feature].isin([0, 1]).all():
                 issues[feature] = f"Contains invalid values (expected: 0 or 1)."
 
@@ -133,6 +132,8 @@ class AlzheimerDatasetAnalyzer:
         }
 
         for feature, valid_values in categorical_features.items():
+            if feature not in self.df.columns:
+                continue
             if not self.df[feature].isin(valid_values).all():
                 issues[feature] = f"Contains invalid values (expected: {valid_values})."
 
@@ -150,7 +151,7 @@ class AlzheimerDatasetAnalyzer:
         The histograms are saved into JPEG files with a maximum layout of 2 rows x 3 columns per file.
         :param bins: Number of bins in histograms.
         """
-        features = self.selected_features
+        features = self.df.columns
         num_features = len(features)
         plots_per_fig = 6  # 2 rows x 3 columns
         num_figs = math.ceil(num_features / plots_per_fig)
@@ -176,6 +177,7 @@ class AlzheimerDatasetAnalyzer:
             plt.tight_layout(rect=(0, 0.03, 1, 0.95))
             filename = f"histograms_{fig_idx + 1}.jpg"
             plt.savefig(filename)
+            plt.show()
             print(f"Histogram batch {fig_idx + 1} saved as {filename}")
             plt.close(fig)
 
@@ -185,7 +187,7 @@ class AlzheimerDatasetAnalyzer:
         The box plots are saved into JPEG files with a maximum layout of 2 rows x 3 columns per file.
         """
         # Select continuous features: only those with more than 2 unique values.
-        continuous_features = [feature for feature in self.selected_features if self.df[feature].nunique() > 2]
+        continuous_features = [feature for feature in self.df.columns if self.df[feature].nunique() > 2]
         num_features = len(continuous_features)
         plots_per_fig = 6  # 2 rows x 3 columns
         num_figs = math.ceil(num_features / plots_per_fig)
@@ -211,18 +213,13 @@ class AlzheimerDatasetAnalyzer:
             plt.tight_layout(rect=(0, 0.03, 1, 0.95))
             filename = f"boxplots_{fig_idx + 1}.jpg"
             plt.savefig(filename)
+            plt.show()
             print(f"Box plot batch {fig_idx + 1} saved as {filename}")
             plt.close(fig)
 
     def full_analysis(self):
         """
-        Performs a full analysis of the dataset, including:
-        - Preprocessing (One-hot encoding Ethnicity, Validating Data)
-        - Class distribution analysis
-        - Missing value detection
-        - Summary statistics
-        - Histogram visualization
-        - Box plot visualization
+        Performs a full analysis of the dataset
         """
         print("\nRunning Full Analysis...\n")
         self.preprocess_data()
@@ -232,9 +229,3 @@ class AlzheimerDatasetAnalyzer:
         self.plot_histograms()
         self.plot_boxplots()
         print("\nFull analysis completed.")
-
-
-# Example usage:
-file_path = "../alzheimers_disease_data.csv"  # Replace with the actual file path
-analyzer = AlzheimerDatasetAnalyzer(file_path)
-analyzer.full_analysis()
