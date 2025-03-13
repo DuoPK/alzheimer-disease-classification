@@ -1,4 +1,4 @@
-from analyzer.analyze import AlzheimerDatasetAnalyzer
+from analyze.analyzer import AlzheimerDatasetAnalyzer
 
 selected_features = [
     "Age", "Gender", "EducationLevel", "BMI", "Smoking", "AlcoholConsumption",

@@ -104,14 +104,15 @@ class AlzheimerDatasetAnalyzer:
             "ADL": (0, 10)
         }
 
-        # Check numeric ranges
+        # Check numeric ranges and replace invalid values with NaN
         for feature, (min_val, max_val) in valid_ranges.items():
-            if feature not in self.df.columns:
-                continue
-            if not self.df[feature].between(min_val, max_val).all():
-                issues[feature] = f"Values out of range (expected: {min_val}-{max_val})."
+            if feature in self.df.columns:
+                mask = ~self.df[feature].between(min_val, max_val)
+                if mask.any():
+                    issues[feature] = f"Values out of range (expected: {min_val}-{max_val})."
+                    self.df.loc[mask, feature] = np.nan
 
-        # Check categorical/binary variables (0 or 1)
+        # Check categorical/binary variables (expected values: 0 or 1)
         binary_features = [
             "Gender", "Smoking", "FamilyHistoryAlzheimers", "CardiovascularDisease",
             "Diabetes", "Depression", "HeadInjury", "Hypertension", "MemoryComplaints",
@@ -121,21 +122,23 @@ class AlzheimerDatasetAnalyzer:
         ]
 
         for feature in binary_features:
-            if feature not in self.df.columns:
-                continue
-            if not self.df[feature].isin([0, 1]).all():
-                issues[feature] = f"Contains invalid values (expected: 0 or 1)."
+            if feature in self.df.columns:
+                mask = ~self.df[feature].isin([0, 1])
+                if mask.any():
+                    issues[feature] = f"Contains invalid values (expected: 0 or 1)."
+                    self.df.loc[mask, feature] = np.nan
 
         # Check categorical features with fixed values
         categorical_features = {
-            "EducationLevel": [0, 1, 2, 3]  # 4 levels (None, High School, Bachelor's, Higher)
+            "EducationLevel": [0, 1, 2, 3]  # Valid levels: None, High School, Bachelor's, Higher
         }
 
         for feature, valid_values in categorical_features.items():
-            if feature not in self.df.columns:
-                continue
-            if not self.df[feature].isin(valid_values).all():
-                issues[feature] = f"Contains invalid values (expected: {valid_values})."
+            if feature in self.df.columns:
+                mask = ~self.df[feature].isin(valid_values)
+                if mask.any():
+                    issues[feature] = f"Contains invalid values (expected: {valid_values})."
+                    self.df.loc[mask, feature] = np.nan
 
         # Display detected issues
         if issues:
@@ -218,9 +221,6 @@ class AlzheimerDatasetAnalyzer:
             plt.close(fig)
 
     def full_analysis(self):
-        """
-        Performs a full analysis of the dataset
-        """
         print("\nRunning Full Analysis...\n")
         self.preprocess_data()
         self.analyze_classes()
