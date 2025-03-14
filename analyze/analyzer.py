@@ -106,7 +106,7 @@ class AlzheimerDatasetAnalyzer:
             if feature in self.df.columns:
                 mask = ~self.df[feature].between(min_val, max_val)
                 if mask.any():
-                    issues[feature] = f"Values out of range (expected: {min_val}-{max_val})."
+                    issues[feature] = f"Values out of range (expected: {min_val}-{max_val}).\n{self.df.loc[mask, feature]}"
                     self.df.loc[mask, feature] = np.nan
 
         # Check categorical/binary variables (expected values: 0 or 1)
@@ -122,7 +122,7 @@ class AlzheimerDatasetAnalyzer:
             if feature in self.df.columns:
                 mask = ~self.df[feature].isin([0, 1])
                 if mask.any():
-                    issues[feature] = f"Contains invalid values (expected: 0 or 1)."
+                    issues[feature] = f"Contains invalid values (expected: 0 or 1).\n{self.df.loc[mask, feature]}"
                     self.df.loc[mask, feature] = np.nan
 
         # Check categorical features with fixed values
@@ -135,7 +135,7 @@ class AlzheimerDatasetAnalyzer:
             if feature in self.df.columns:
                 mask = ~self.df[feature].isin(valid_values)
                 if mask.any():
-                    issues[feature] = f"Contains invalid values (expected: {valid_values})."
+                    issues[feature] = f"Contains invalid values (expected: {valid_values}).\n{self.df.loc[mask, feature]}"
                     self.df.loc[mask, feature] = np.nan
 
         # Display detected issues
