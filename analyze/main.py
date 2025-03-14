@@ -11,6 +11,6 @@ selected_features = [
     "Ethnicity"  # One-hot encoded
 ]
 
-file_path = "../alzheimers_disease_data.csv"
+file_path = "../data_generation/modified_extreme_dataset.csv"
 analyzer = AlzheimerDatasetAnalyzer(file_path, selected_features)
 analyzer.full_analysis()

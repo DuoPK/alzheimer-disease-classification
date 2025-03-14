@@ -42,9 +42,6 @@ class AlzheimerDatasetAnalyzer:
         # Merge with original DataFrame and drop 'Ethnicity'
         self.df = pd.concat([self.df.drop(columns=["Ethnicity"]), ethnicity_encoded], axis=1)
 
-        # Update selected features after one-hot encoding
-        # self.selected_features = [feature for feature in self.selected_features if feature != "Ethnicity"] + list(ethnicity_encoded.columns)
-
         print("\nOne-hot encoding for Ethnicity completed. New columns added:", list(ethnicity_encoded.columns))
 
     def analyze_classes(self):
@@ -87,21 +84,21 @@ class AlzheimerDatasetAnalyzer:
         issues = {}
         # Numerical features with known ranges
         valid_ranges = {
-            "Age": (60, 90),
-            "BMI": (15, 40),
-            "AlcoholConsumption": (0, 20),
-            "PhysicalActivity": (0, 10),
-            "DietQuality": (0, 10),
-            "SleepQuality": (4, 10),
-            "SystolicBP": (90, 180),
-            "DiastolicBP": (60, 120),
-            "CholesterolTotal": (150, 300),
-            "CholesterolLDL": (50, 200),
-            "CholesterolHDL": (20, 100),
-            "CholesterolTriglycerides": (50, 400),
-            "MMSE": (0, 30),
-            "FunctionalAssessment": (0, 10),
-            "ADL": (0, 10)
+            "Age": (1, 120),  # (60, 90)
+            "BMI": (10, 100),  # (15, 40)
+            "AlcoholConsumption": (0, 168),  # (0, 20), 1 unit = 10 ml pure ethanol, per week
+            "PhysicalActivity": (0, 100),  # (0, 10), hours per week
+            "DietQuality": (0, 10),  # Author's scale
+            "SleepQuality": (0, 10),  # (4, 10), Author's scale
+            "SystolicBP": (30.1, 260 - 0.1),  # (90, 180), Systolic blood pressure [mmHg]
+            "DiastolicBP": (20.1, 220 - 0.1),  # (60, 120), Diastolic blood pressure [mmHg]
+            "CholesterolTotal": (50.1, 600 - 0.1),  # (150, 300), Total cholesterol levels [mg/dL]
+            "CholesterolLDL": (15.1, 450 - 0.1),  # (50, 200), Low-density lipoprotein cholesterol levels [mg/dL]
+            "CholesterolHDL": (5.1, 200 - 0.1),  # (20, 100), High-density lipoprotein cholesterol levels [mg/dL]
+            "CholesterolTriglycerides": (10.1, 1000 - 0.1),  # (50, 400), Triglycerides levels [mg/dL]
+            "MMSE": (0, 30),  # Mini-Mental State Examination, standard scale
+            "FunctionalAssessment": (0, 10),  # Author's scale
+            "ADL": (0, 10),  # Author's scale, Activities of Daily Living score
         }
 
         # Check numeric ranges and replace invalid values with NaN
@@ -130,7 +127,8 @@ class AlzheimerDatasetAnalyzer:
 
         # Check categorical features with fixed values
         categorical_features = {
-            "EducationLevel": [0, 1, 2, 3]  # Valid levels: None, High School, Bachelor's, Higher
+            "EducationLevel": [0, 1, 2, 3],  # Valid levels: None, High School, Bachelor's, Higher
+            "Ethnicity": [0, 1, 2, 3]  # {0: "Caucasian", 1: "African_American", 2: "Asian", 3: "Other"}
         }
 
         for feature, valid_values in categorical_features.items():
