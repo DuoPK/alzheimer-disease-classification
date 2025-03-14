@@ -1,3 +1,6 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 from analyze.analyzer import AlzheimerDatasetAnalyzer
 
 selected_features = [
@@ -19,3 +22,8 @@ file_path = "../ready_dataset_with_nulls_as_incorrect_data.csv"
 analyzer = AlzheimerDatasetAnalyzer(file_path, selected_features)
 analyzer.full_analysis(incorrect_data_to_nan=False, save_img=True, hist_bins=None, show_count_on_hist=True,
                        path_imgs="with_all_nulls")
+
+df = analyzer.df
+
+sns.pairplot(df)
+plt.show()
