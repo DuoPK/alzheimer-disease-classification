@@ -5,7 +5,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 path = kagglehub.dataset_download("rabieelkharoua/alzheimers-disease-dataset")
-
 print(path)
 
 df = pd.read_csv(path + "/alzheimers_disease_data.csv")
@@ -49,10 +48,3 @@ for row in random_rows:
 output_file_path = "modified_extreme_dataset.csv"
 df.to_csv(output_file_path, index=False)
 
-print(f"Zmieniono wartości w {len(random_rows)} wierszach.")
-print(f"Zapisano do: {output_file_path}")
-
-# df = pd.read_csv("modified_extreme_dataset.csv")
-
-# sns.pairplot(df)
-# plt.show()
