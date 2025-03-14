@@ -1,5 +1,5 @@
-*.csv
-*.jpg
+#*.csv
+#*.jpg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -19,15 +19,6 @@ for row in random_rows:
     random_col = np.random.choice(df.columns)
     df.loc[row, random_col] = None
 
-columns_map = {
-    17: "SystolicBP",
-    18: "DiastolicBP",
-    19: "CholesterolTotal",
-    20: "CholesterolLDL",
-    21: "CholesterolHDL",
-    22: "CholesterolTriglycerides"
-}
-
 extreme_ranges = {
     "SystolicBP": (0, 30, 260, 400),
     "DiastolicBP": (0, 20, 220, 400),
@@ -45,15 +36,15 @@ def get_random_extreme_value(low1, high1, low2, high2):
         return np.random.randint(low2, high2 + 1)
 
 
+target_columns = [col for col in df.columns if col in extreme_ranges]
 num_rows = df.shape[0]
 sample_size = int(0.02 * num_rows)
 random_rows = np.random.choice(df.index, size=sample_size, replace=False)
 
 for row in random_rows:
-    for col_num, col_name in columns_map.items():
-        if col_name in df.columns:
-            low1, high1, low2, high2 = extreme_ranges[col_name]
-            df.iloc[row, col_num] = get_random_extreme_value(low1, high1, low2, high2)
+    for col_name in target_columns:
+        low1, high1, low2, high2 = extreme_ranges[col_name]
+        df.loc[row, col_name] = get_random_extreme_value(low1, high1, low2, high2)
 
 output_file_path = "modified_extreme_dataset.csv"
 df.to_csv(output_file_path, index=False)
