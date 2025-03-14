@@ -18,14 +18,6 @@ class AlzheimerDatasetAnalyzer:
         self.df = pd.read_csv(file_path)
         self.df = self.df[self.selected_features]
 
-    def preprocess_data(self):
-        """
-        Runs all preprocessing steps
-        """
-        if "Ethnicity" in self.df.columns:
-            self.one_hot_encode_ethnicity()
-        self.validate_data_ranges()
-
     def one_hot_encode_ethnicity(self):
         """
         Converts the 'Ethnicity' categorical feature into multiple binary columns (0/1).
@@ -54,9 +46,9 @@ class AlzheimerDatasetAnalyzer:
 
         plt.figure(figsize=(6, 4))
         sns.barplot(x=class_counts.index, y=class_counts.values, palette="coolwarm", hue=class_counts.index)
-        plt.xlabel("Diagnosis (0 = No Alzheimer’s, 1 = Alzheimer’s)")
-        plt.ylabel("Number of Patients")
-        plt.title("Class Distribution in Dataset")
+        plt.xlabel("Diagnoza (0 = Zdrowy, 1 = Chory)")
+        plt.ylabel("Liczba pacjentów")
+        plt.title("Rozłożenie klas")
         plt.tight_layout()
         plt.savefig("class_distribution.jpg")
         plt.show()
@@ -77,7 +69,7 @@ class AlzheimerDatasetAnalyzer:
         print("\nDataset statistics:")
         print(self.df.describe())
 
-    def validate_data_ranges(self):
+    def validate_data_ranges(self, change_to_nan=False):
         """
         Validates data ranges for selected features and reports anomalies.
         """
@@ -107,7 +99,8 @@ class AlzheimerDatasetAnalyzer:
                 mask = ~self.df[feature].between(min_val, max_val)
                 if mask.any():
                     issues[feature] = f"Values out of range (expected: {min_val}-{max_val}).\n{self.df.loc[mask, feature]}"
-                    self.df.loc[mask, feature] = np.nan
+                    if change_to_nan:
+                        self.df.loc[mask, feature] = np.nan
 
         # Check categorical/binary variables (expected values: 0 or 1)
         binary_features = [
@@ -123,7 +116,8 @@ class AlzheimerDatasetAnalyzer:
                 mask = ~self.df[feature].isin([0, 1])
                 if mask.any():
                     issues[feature] = f"Contains invalid values (expected: 0 or 1).\n{self.df.loc[mask, feature]}"
-                    self.df.loc[mask, feature] = np.nan
+                    if change_to_nan:
+                        self.df.loc[mask, feature] = np.nan
 
         # Check categorical features with fixed values
         categorical_features = {
@@ -136,7 +130,8 @@ class AlzheimerDatasetAnalyzer:
                 mask = ~self.df[feature].isin(valid_values)
                 if mask.any():
                     issues[feature] = f"Contains invalid values (expected: {valid_values}).\n{self.df.loc[mask, feature]}"
-                    self.df.loc[mask, feature] = np.nan
+                    if change_to_nan:
+                        self.df.loc[mask, feature] = np.nan
 
         # Display detected issues
         if issues:
@@ -146,15 +141,16 @@ class AlzheimerDatasetAnalyzer:
         else:
             print("\n All values are within expected ranges.")
 
-    def plot_histograms(self, bins=20):
+    def plot_histograms(self, bins=20, save_img=False):
         """
         Plots histograms for all selected features.
         The histograms are saved into JPEG files with a maximum layout of 2 rows x 3 columns per file.
+        :param save_img: if save the images
         :param bins: Number of bins in histograms.
         """
         features = self.df.columns
         num_features = len(features)
-        plots_per_fig = 6  # 2 rows x 3 columns
+        plots_per_fig = 3
         num_figs = math.ceil(num_features / plots_per_fig)
 
         for fig_idx in range(num_figs):
@@ -162,7 +158,7 @@ class AlzheimerDatasetAnalyzer:
             end = start + plots_per_fig
             batch_features = features[start:end]
 
-            fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+            fig, axes = plt.subplots(1, 3, figsize=(15, 5))
             axes = axes.flatten()
 
             for i, feature in enumerate(batch_features):
@@ -174,15 +170,16 @@ class AlzheimerDatasetAnalyzer:
             for j in range(i + 1, len(axes)):
                 fig.delaxes(axes[j])
 
-            fig.suptitle("Histograms of Selected Features", fontsize=16)
+            # fig.suptitle("Histograms", fontsize=16)
             plt.tight_layout(rect=(0, 0.03, 1, 0.95))
             filename = f"histograms_{fig_idx + 1}.jpg"
-            plt.savefig(filename)
+            if save_img:
+                plt.savefig(filename)
             plt.show()
             print(f"Histogram batch {fig_idx + 1} saved as {filename}")
             plt.close(fig)
 
-    def plot_boxplots(self):
+    def plot_boxplots(self, save_img=False):
         """
         Generates box plots for continuous features only (features with >2 unique values).
         The box plots are saved into JPEG files with a maximum layout of 2 rows x 3 columns per file.
@@ -190,7 +187,7 @@ class AlzheimerDatasetAnalyzer:
         # Select continuous features: only those with more than 2 unique values.
         continuous_features = [feature for feature in self.df.columns if self.df[feature].nunique() > 2]
         num_features = len(continuous_features)
-        plots_per_fig = 6  # 2 rows x 3 columns
+        plots_per_fig = 6
         num_figs = math.ceil(num_features / plots_per_fig)
 
         for fig_idx in range(num_figs):
@@ -198,7 +195,7 @@ class AlzheimerDatasetAnalyzer:
             end = start + plots_per_fig
             batch_features = continuous_features[start:end]
 
-            fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+            fig, axes = plt.subplots(1, 6, figsize=(15, 5))
             axes = axes.flatten()
 
             for i, feature in enumerate(batch_features):
@@ -210,20 +207,26 @@ class AlzheimerDatasetAnalyzer:
             for j in range(i + 1, len(axes)):
                 fig.delaxes(axes[j])
 
-            fig.suptitle("Box Plots of Continuous Features", fontsize=16)
+            # fig.suptitle("Box Plots", fontsize=16)
             plt.tight_layout(rect=(0, 0.03, 1, 0.95))
             filename = f"boxplots_{fig_idx + 1}.jpg"
-            plt.savefig(filename)
+            if save_img:
+                plt.savefig(filename)
             plt.show()
             print(f"Box plot batch {fig_idx + 1} saved as {filename}")
             plt.close(fig)
 
-    def full_analysis(self):
+    def full_analysis(self, incorrect_data_to_nan=False, save_img=False, hist_bins=20):
         print("\nRunning Full Analysis...\n")
-        self.preprocess_data()
         self.analyze_classes()
         self.check_missing_values()
         self.dataset_statistics()
-        self.plot_histograms()
-        self.plot_boxplots()
+        self.plot_histograms(bins=hist_bins, save_img=save_img)
+        self.plot_boxplots(save_img=save_img)
+        self.validate_data_ranges(change_to_nan=incorrect_data_to_nan)
+        if incorrect_data_to_nan:
+            self.df.to_csv("ready_dataset_with_nulls_as_incorrect_data.csv", index=False)
+        # if "Ethnicity" in self.df.columns:
+        #     self.one_hot_encode_ethnicity()
+        # self.df.to_csv("ready_dataset_with_nulls_as_incorrect_data_onehot.csv", index=False)
         print("\nFull analysis completed.")

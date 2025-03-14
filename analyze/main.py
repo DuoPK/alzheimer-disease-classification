@@ -13,4 +13,8 @@ selected_features = [
 
 file_path = "../data_generation/modified_extreme_dataset.csv"
 analyzer = AlzheimerDatasetAnalyzer(file_path, selected_features)
-analyzer.full_analysis()
+analyzer.full_analysis(incorrect_data_to_nan=True, save_img=True, hist_bins=20)
+
+file_path = "ready_dataset_with_nulls_as_incorrect_data.csv"
+analyzer = AlzheimerDatasetAnalyzer(file_path, selected_features)
+analyzer.full_analysis(incorrect_data_to_nan=False, save_img=False, hist_bins=20)
