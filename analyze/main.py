@@ -11,10 +11,11 @@ selected_features = [
     "Ethnicity"  # One-hot encoded
 ]
 
-file_path = "../data_generation/modified_extreme_dataset.csv"
+file_path = "../modified_extreme_dataset.csv"
 analyzer = AlzheimerDatasetAnalyzer(file_path, selected_features)
-analyzer.full_analysis(incorrect_data_to_nan=True, save_img=True, hist_bins=20)
+analyzer.full_analysis(incorrect_data_to_nan=True, save_img=True, hist_bins=20, path_imgs="with_out_of_range")
 
-file_path = "ready_dataset_with_nulls_as_incorrect_data.csv"
+file_path = "../ready_dataset_with_nulls_as_incorrect_data.csv"
 analyzer = AlzheimerDatasetAnalyzer(file_path, selected_features)
-analyzer.full_analysis(incorrect_data_to_nan=False, save_img=False, hist_bins=20)
+analyzer.full_analysis(incorrect_data_to_nan=False, save_img=True, hist_bins=None, show_count_on_hist=True,
+                       path_imgs="with_all_nulls")

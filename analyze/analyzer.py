@@ -1,4 +1,6 @@
 import math
+from os import makedirs
+from pathlib import Path
 
 import pandas as pd
 import numpy as np
@@ -98,7 +100,8 @@ class AlzheimerDatasetAnalyzer:
             if feature in self.df.columns:
                 mask = ~self.df[feature].between(min_val, max_val)
                 if mask.any():
-                    issues[feature] = f"Values out of range (expected: {min_val}-{max_val}).\n{self.df.loc[mask, feature]}"
+                    issues[
+                        feature] = f"Values out of range (expected: {min_val}-{max_val}).\n{self.df.loc[mask, feature]}"
                     if change_to_nan:
                         self.df.loc[mask, feature] = np.nan
 
@@ -129,7 +132,8 @@ class AlzheimerDatasetAnalyzer:
             if feature in self.df.columns:
                 mask = ~self.df[feature].isin(valid_values)
                 if mask.any():
-                    issues[feature] = f"Contains invalid values (expected: {valid_values}).\n{self.df.loc[mask, feature]}"
+                    issues[
+                        feature] = f"Contains invalid values (expected: {valid_values}).\n{self.df.loc[mask, feature]}"
                     if change_to_nan:
                         self.df.loc[mask, feature] = np.nan
 
@@ -141,12 +145,14 @@ class AlzheimerDatasetAnalyzer:
         else:
             print("\n All values are within expected ranges.")
 
-    def plot_histograms(self, bins=20, save_img=False):
+    def plot_histograms(self, bins=20, save_img=False, show_count=False, path_imgs=""):
         """
         Plots histograms for all selected features.
-        The histograms are saved into JPEG files with a maximum layout of 2 rows x 3 columns per file.
-        :param save_img: if save the images
+        The histograms are saved into JPEG files with a maximum layout of 1 row x 3 columns per file.
+
         :param bins: Number of bins in histograms.
+        :param save_img: If True, saves the images as JPEG files.
+        :param show_count: If True, displays sample count above each bin.
         """
         features = self.df.columns
         num_features = len(features)
@@ -163,23 +169,31 @@ class AlzheimerDatasetAnalyzer:
 
             for i, feature in enumerate(batch_features):
                 ax = axes[i]
-                self.df[feature].hist(bins=bins, ax=ax, color="skyblue", edgecolor="black")
+                counts, bin_edges, patches = ax.hist(self.df[feature], bins=bins, color="skyblue", edgecolor="black")
+
                 ax.set_title(feature)
+
+                if show_count:
+                    for count, bin_patch in zip(counts, patches):
+                        if count > 0:
+                            bin_x = bin_patch.get_x() + bin_patch.get_width() / 2
+                            ax.text(bin_x, count, str(int(count)), ha='center', va='bottom', fontsize=10, color='black')
 
             # Remove any unused subplots
             for j in range(i + 1, len(axes)):
                 fig.delaxes(axes[j])
 
-            # fig.suptitle("Histograms", fontsize=16)
             plt.tight_layout(rect=(0, 0.03, 1, 0.95))
-            filename = f"histograms_{fig_idx + 1}.jpg"
+            filename = Path(f"histograms_{fig_idx + 1}.jpg")
             if save_img:
-                plt.savefig(filename)
+                if path_imgs:
+                    makedirs(path_imgs, exist_ok=True)
+                plt.savefig(path_imgs / filename)
             plt.show()
             print(f"Histogram batch {fig_idx + 1} saved as {filename}")
             plt.close(fig)
 
-    def plot_boxplots(self, save_img=False):
+    def plot_boxplots(self, save_img=False, path_imgs=""):
         """
         Generates box plots for continuous features only (features with >2 unique values).
         The box plots are saved into JPEG files with a maximum layout of 2 rows x 3 columns per file.
@@ -209,20 +223,23 @@ class AlzheimerDatasetAnalyzer:
 
             # fig.suptitle("Box Plots", fontsize=16)
             plt.tight_layout(rect=(0, 0.03, 1, 0.95))
-            filename = f"boxplots_{fig_idx + 1}.jpg"
+            filename = Path(f"boxplots_{fig_idx + 1}.jpg")
             if save_img:
-                plt.savefig(filename)
+                if path_imgs:
+                    makedirs(path_imgs, exist_ok=True)
+                plt.savefig(path_imgs / filename)
             plt.show()
             print(f"Box plot batch {fig_idx + 1} saved as {filename}")
             plt.close(fig)
 
-    def full_analysis(self, incorrect_data_to_nan=False, save_img=False, hist_bins=20):
+    def full_analysis(self, incorrect_data_to_nan=False, save_img=False, hist_bins=20, show_count_on_hist=False,
+                      path_imgs=""):
         print("\nRunning Full Analysis...\n")
         self.analyze_classes()
         self.check_missing_values()
         self.dataset_statistics()
-        self.plot_histograms(bins=hist_bins, save_img=save_img)
-        self.plot_boxplots(save_img=save_img)
+        self.plot_histograms(bins=hist_bins, save_img=save_img, show_count=show_count_on_hist, path_imgs=path_imgs)
+        self.plot_boxplots(save_img=save_img, path_imgs=path_imgs)
         self.validate_data_ranges(change_to_nan=incorrect_data_to_nan)
         if incorrect_data_to_nan:
             self.df.to_csv("ready_dataset_with_nulls_as_incorrect_data.csv", index=False)
