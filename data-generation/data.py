@@ -8,7 +8,7 @@ path = kagglehub.dataset_download("rabieelkharoua/alzheimers-disease-dataset")
 
 print(path)
 
-df =  pd.read_csv(path+"/alzheimers_disease_data.csv")
+df = pd.read_csv(path + "/alzheimers_disease_data.csv")
 df = df.iloc[:, 1:-1]
 
 num_rows = df.shape[0]
@@ -37,7 +37,8 @@ extreme_ranges = {
     "CholesterolTriglycerides": (0, 10, 1000, 2000)
 }
 
-def losuj_ekstremalną_wartość(low1, high1, low2, high2):
+
+def get_random_extreme_value(low1, high1, low2, high2):
     if np.random.rand() < 0.5:
         return np.random.randint(low1, high1 + 1)
     else:
@@ -52,7 +53,7 @@ for row in random_rows:
     for col_num, col_name in columns_map.items():
         if col_name in df.columns:
             low1, high1, low2, high2 = extreme_ranges[col_name]
-            df.iloc[row, col_num] = losuj_ekstremalną_wartość(low1, high1, low2, high2)
+            df.iloc[row, col_num] = get_random_extreme_value(low1, high1, low2, high2)
 
 output_file_path = "modified_extreme_dataset.csv"
 df.to_csv(output_file_path, index=False)
@@ -60,7 +61,7 @@ df.to_csv(output_file_path, index=False)
 print(f"Zmieniono wartości w {len(random_rows)} wierszach.")
 print(f"Zapisano do: {output_file_path}")
 
+# df = pd.read_csv("modified_extreme_dataset.csv")
 
-df = pd.read_csv( "modified_extreme_dataset.csv")
-sns.pairplot(df)
-plt.show()
+# sns.pairplot(df)
+# plt.show()
