@@ -204,6 +204,75 @@ class AlzheimerDatasetAnalyzer:
             print(f"Box plot batch {fig_idx + 1} saved as {filename}")
             plt.close(fig)
 
+    def plot_pairplots(self, selected_cols, save_img=False, path_imgs=""):
+        """
+        Generates a pairplot for selected features (default: cholesterol-related).
+
+        Parameters:
+        selected_cols (list): List of column names to include in the pairplot.
+        save_img (bool): If True, saves the plot as a PNG file.
+        path_imgs (str): Directory path where the image will be saved (if save_img=True).
+        """
+
+        available_cols = [col for col in selected_cols if col in self.df.columns]
+
+        if len(available_cols) < 2:
+            print("Not enough selected features available in the dataset for a pairplot.")
+            return
+
+        sns.pairplot(self.df[available_cols])
+        plt.tight_layout()
+
+        if save_img:
+            filename = Path("pairplot_selected_variables.png")
+            if path_imgs:
+                makedirs(path_imgs, exist_ok=True)
+                filename = Path(path_imgs) / filename
+            plt.savefig(filename, dpi=300, bbox_inches='tight')
+            print(f"Pairplot saved as {filename}")
+
+        plt.show()
+        plt.close()
+
+    def plot_correlation_heatmap(self, method="spearman", save_img=False, path_imgs=""):
+        """
+        Plots a heatmap of correlation between numeric features using the specified method.
+
+        Parameters:
+        method (str): Correlation method ('pearson', 'spearman').
+        save_img (bool): Whether to save the heatmap image.
+        path_imgs (str): Directory to save the image if save_img is True.
+        """
+        numeric_cols = self.df.select_dtypes(include='number').columns
+        correlation_matrix = self.df[numeric_cols].corr(method=method)
+
+        plt.figure(figsize=(18, 14))
+        sns.heatmap(
+            correlation_matrix,
+            annot=True,
+            cmap='coolwarm',
+            fmt='.2f',
+            cbar=True,
+            square=True,
+            linewidths=0.3,
+            annot_kws={"size": 10},
+            cbar_kws={"shrink": 0.8}
+        )
+
+        plt.title(f"{method.capitalize()} Correlation Heatmap", fontsize=16)
+        plt.tight_layout()
+
+        if save_img:
+            filename = Path(f"correlation_heatmap_{method}.png")
+            if path_imgs:
+                makedirs(path_imgs, exist_ok=True)
+                filename = Path(path_imgs) / filename
+            plt.savefig(filename, dpi=1000, bbox_inches='tight')
+            print(f"Correlation heatmap saved as {filename}")
+
+        plt.show()
+        plt.close()
+
     def remove_rows_with_missing_dependent_value(self):
         """
         Removes rows with missing values in the dependent feature.
@@ -221,6 +290,8 @@ class AlzheimerDatasetAnalyzer:
         self.plot_histograms(bins=hist_bins, save_img=save_img, show_count=show_count_on_hist, path_imgs=path_imgs)
         self.plot_boxplots(save_img=save_img, path_imgs=path_imgs)
         self.validate_data_ranges(change_to_nan=incorrect_data_to_nan)
+        self.plot_pairplots(selected_cols=['CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL'])
+        self.plot_correlation_heatmap(method="spearman")
         if remove_missing_dependent:
             self.remove_rows_with_missing_dependent_value()
         if incorrect_data_to_nan or remove_missing_dependent:
