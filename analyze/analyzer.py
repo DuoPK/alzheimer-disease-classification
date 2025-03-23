@@ -7,9 +7,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from features import range_features, binary_features, categorical_features
+
 
 class AlzheimerDatasetAnalyzer:
-    def __init__(self, file_path, selected_features):
+    def __init__(self, file_path, selected_features, dependent_feature):
         """
         Initializes the dataset analyzer by loading data from a CSV file.
 
@@ -17,8 +19,9 @@ class AlzheimerDatasetAnalyzer:
         file_path (str): Path to the dataset CSV file.
         """
         self.selected_features = selected_features
+        self.dependent_feature = dependent_feature
         self.df = pd.read_csv(file_path)
-        self.df = self.df[self.selected_features]
+        self.df = self.df[self.df.columns.intersection(self.selected_features)]
 
     def one_hot_encode_ethnicity(self):
         """
@@ -27,7 +30,7 @@ class AlzheimerDatasetAnalyzer:
         Drops the original 'Ethnicity' column.
         """
         # Map Ethnicity to category names
-        ethnicity_mapping = {0: "Caucasian", 1: "African_American", 2: "Asian", 3: "Other"}
+        ethnicity_mapping = {0: "Caucasian", 1: "African_American", 2: "Asian", 3: "Other_ethnicity"}
         self.df["Ethnicity"] = self.df["Ethnicity"].map(ethnicity_mapping)
 
         # Apply one-hot encoding and convert to 0/1
@@ -76,27 +79,9 @@ class AlzheimerDatasetAnalyzer:
         Validates data ranges for selected features and reports anomalies.
         """
         issues = {}
-        # Numerical features with known ranges
-        valid_ranges = {
-            "Age": (1, 120),  # (60, 90)
-            "BMI": (10, 100),  # (15, 40)
-            "AlcoholConsumption": (0, 168),  # (0, 20), 1 unit = 10 ml pure ethanol, per week
-            "PhysicalActivity": (0, 100),  # (0, 10), hours per week
-            "DietQuality": (0, 10),  # Author's scale
-            "SleepQuality": (0, 10),  # (4, 10), Author's scale
-            "SystolicBP": (30.1, 260 - 0.1),  # (90, 180), Systolic blood pressure [mmHg]
-            "DiastolicBP": (20.1, 220 - 0.1),  # (60, 120), Diastolic blood pressure [mmHg]
-            "CholesterolTotal": (50.1, 600 - 0.1),  # (150, 300), Total cholesterol levels [mg/dL]
-            "CholesterolLDL": (15.1, 450 - 0.1),  # (50, 200), Low-density lipoprotein cholesterol levels [mg/dL]
-            "CholesterolHDL": (5.1, 200 - 0.1),  # (20, 100), High-density lipoprotein cholesterol levels [mg/dL]
-            "CholesterolTriglycerides": (10.1, 1000 - 0.1),  # (50, 400), Triglycerides levels [mg/dL]
-            "MMSE": (0, 30),  # Mini-Mental State Examination, standard scale
-            "FunctionalAssessment": (0, 10),  # Author's scale
-            "ADL": (0, 10),  # Author's scale, Activities of Daily Living score
-        }
 
-        # Check numeric ranges and replace invalid values with NaN
-        for feature, (min_val, max_val) in valid_ranges.items():
+        # Check numeric ranges
+        for feature, (min_val, max_val) in range_features.items():
             if feature in self.df.columns:
                 mask = ~self.df[feature].between(min_val, max_val)
                 if mask.any():
@@ -106,14 +91,6 @@ class AlzheimerDatasetAnalyzer:
                         self.df.loc[mask, feature] = np.nan
 
         # Check categorical/binary variables (expected values: 0 or 1)
-        binary_features = [
-            "Gender", "Smoking", "FamilyHistoryAlzheimers", "CardiovascularDisease",
-            "Diabetes", "Depression", "HeadInjury", "Hypertension", "MemoryComplaints",
-            "BehavioralProblems", "Confusion", "Disorientation", "PersonalityChanges",
-            "DifficultyCompletingTasks", "Forgetfulness", "Caucasian", "African_American",
-            "Asian", "Other"
-        ]
-
         for feature in binary_features:
             if feature in self.df.columns:
                 mask = ~self.df[feature].isin([0, 1])
@@ -123,11 +100,6 @@ class AlzheimerDatasetAnalyzer:
                         self.df.loc[mask, feature] = np.nan
 
         # Check categorical features with fixed values
-        categorical_features = {
-            "EducationLevel": [0, 1, 2, 3],  # Valid levels: None, High School, Bachelor's, Higher
-            "Ethnicity": [0, 1, 2, 3]  # {0: "Caucasian", 1: "African_American", 2: "Asian", 3: "Other"}
-        }
-
         for feature, valid_values in categorical_features.items():
             if feature in self.df.columns:
                 mask = ~self.df[feature].isin(valid_values)
@@ -232,8 +204,16 @@ class AlzheimerDatasetAnalyzer:
             print(f"Box plot batch {fig_idx + 1} saved as {filename}")
             plt.close(fig)
 
+    def remove_rows_with_missing_dependent_value(self):
+        """
+        Removes rows with missing values in the dependent feature.
+        """
+        print(f"Old dataset shape: {self.df.shape}")
+        self.df = self.df.dropna(subset=[self.dependent_feature])
+        print(f"\nRows with missing values in '{self.dependent_feature}' removed. New dataset shape: {self.df.shape}")
+
     def full_analysis(self, incorrect_data_to_nan=False, save_img=False, hist_bins=20, show_count_on_hist=False,
-                      path_imgs=""):
+                      path_imgs="", remove_missing_dependent=False):
         print("\nRunning Full Analysis...\n")
         self.analyze_classes()
         self.check_missing_values()
@@ -241,9 +221,15 @@ class AlzheimerDatasetAnalyzer:
         self.plot_histograms(bins=hist_bins, save_img=save_img, show_count=show_count_on_hist, path_imgs=path_imgs)
         self.plot_boxplots(save_img=save_img, path_imgs=path_imgs)
         self.validate_data_ranges(change_to_nan=incorrect_data_to_nan)
-        if incorrect_data_to_nan:
-            self.df.to_csv("ready_dataset_with_nulls_as_incorrect_data.csv", index=False)
-        # if "Ethnicity" in self.df.columns:
-        #     self.one_hot_encode_ethnicity()
-        # self.df.to_csv("ready_dataset_with_nulls_as_incorrect_data_onehot.csv", index=False)
+        if remove_missing_dependent:
+            self.remove_rows_with_missing_dependent_value()
+        if incorrect_data_to_nan or remove_missing_dependent:
+            self.df.to_csv("ready_dataset_to_preprocessing.csv", index=False)
         print("\nFull analysis completed.")
+
+    def check_and_save_dataset(self, incorrect_data_to_nan=True, remove_missing_dependent=True):
+        self.validate_data_ranges(change_to_nan=incorrect_data_to_nan)
+        if remove_missing_dependent:
+            self.remove_rows_with_missing_dependent_value()
+        if incorrect_data_to_nan or remove_missing_dependent:
+            self.df.to_csv("../ready_dataset_to_preprocessing.csv", index=False)

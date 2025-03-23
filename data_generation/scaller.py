@@ -1,7 +1,10 @@
+from features import range_features
+
+
 class DataScaler:
 
     def minmax_scaler(self, df, new_max=1, new_min=0):
-        numeric_cols = df.select_dtypes(include='number').columns
+        numeric_cols = list(range_features.keys()) + ["EducationLevel"]
         df_scaled = df.copy()
         for col in numeric_cols:
             min_value = df_scaled[col].min()
@@ -11,7 +14,7 @@ class DataScaler:
         return df_scaled
 
     def standardize_data(self, df):
-        numeric_cols = df.select_dtypes(include='number').columns
+        numeric_cols = list(range_features.keys()) + ["EducationLevel"]
         df_standardized = df.copy()
 
         for col in numeric_cols:

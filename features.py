@@ -1,4 +1,4 @@
-valid_ranges = {
+range_features = {
     "Age": (1, 120),  # (60, 90)
     "BMI": (10, 100),  # (15, 40)
     "AlcoholConsumption": (0, 168),  # (0, 20), 1 unit = 10 ml pure ethanol, per week
@@ -16,28 +16,26 @@ valid_ranges = {
     "ADL": (0, 10),  # Author's scale, Activities of Daily Living score
 }
 
+int_features = [
+    "Age",
+    # "AlcoholConsumption",
+    # "PhysicalActivity",
+    # "DietQuality",
+    # "SleepQuality",
+    # "MMSE",
+    # "FunctionalAssessment",
+    # "ADL"
+]
+
 binary_features = [
     "Gender", "Smoking", "FamilyHistoryAlzheimers", "CardiovascularDisease",
     "Diabetes", "Depression", "HeadInjury", "Hypertension", "MemoryComplaints",
     "BehavioralProblems", "Confusion", "Disorientation", "PersonalityChanges",
-    "DifficultyCompletingTasks", "Forgetfulness"
+    "DifficultyCompletingTasks", "Forgetfulness", "Diagnosis",
+    "Caucasian", "African_American", "Asian", "Other_ethnicity"
 ]
 
 categorical_features = {
     "EducationLevel": [0, 1, 2, 3],  # Valid levels: None, High School, Bachelor's, Higher
     "Ethnicity": [0, 1, 2, 3]  # {0: "Caucasian", 1: "African_American", 2: "Asian", 3: "Other"}
 }
-
-
-def print_changed_values(original_df, df):
-    changed_cells = []
-    for column in df.columns:
-        null_mask = original_df[column].isnull()
-        changed_indices = df.index[null_mask]
-        for idx in changed_indices:
-            diagnosis = df.at[idx, 'Diagnosis'] if 'Diagnosis' in df.columns else 'Brak diagnozy'
-            changed_cells.append((idx, column, df.at[idx, column], diagnosis))
-
-    print("Lista imputowanych wartości:")
-    for idx, column, value, diagnosis in changed_cells:
-        print(f"Indeks: {idx}, Cecha: {column}, Nowa wartość: {value}, Diagnoza: {diagnosis}")
