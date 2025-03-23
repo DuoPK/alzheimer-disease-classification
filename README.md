@@ -10,4 +10,26 @@ In root folder:
   - Scatterplots, pairplots, heatmap.
   - Analysis of individual data (e.g. what part of sick patients has a higher value of the `P` feature than the `x` value).
 
-  b) We complete this data using 3 methods.
+### Add null / incorrect values
+`cd data_generation`<br>
+`py add_some_incorrect_values.py`
+
+### Change extreme values to nulls
+And remove rows with missing dependent variable (diagnosis).<br>
+`cd analyze`<br>
+`py main.py`
+
+## Preprocessing
+### Fill missing values
+- Mean and mode,
+- Median and mode,
+- IterativeImputer (BayesianRidge) and RandomForestClassifier.<br>
+
+### Features scaling
+- min-max scaling,
+- standardization.
+
+`cd data_generation`<br>
+`py generator.py`
+
+Datasets ready for classification are in the `data_generation/data` folder.
