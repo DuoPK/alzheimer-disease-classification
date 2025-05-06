@@ -31,25 +31,39 @@ class NeuralNetwork(nn.Module):
         return self.network(x)
 
 class NeuralNetworkModel:
-    def __init__(self, input_size, hidden_sizes=[128, 64], output_size=2, 
+    def __init__(self, input_size, output_size=2, 
                  learning_rate=0.001, batch_size=32, epochs=100, 
                  device=None, **kwargs):
         """
         Parameters:
         - input_size: number of input features
-        - hidden_sizes: list of hidden layer sizes
         - output_size: number of output classes
         - learning_rate: learning rate for optimizer
         - batch_size: batch size for training
         - epochs: number of training epochs
         - device: device to run the model on ('cuda' or 'cpu')
+        - **kwargs: additional parameters including:
+            - n_layers: number of hidden layers (from Optuna)
+            - layer_X_size: size of layer X (from Optuna)
+            - dropout_rate: dropout rate for layers
         """
         self.input_size = input_size
-        self.hidden_sizes = hidden_sizes
         self.output_size = output_size
         self.learning_rate = learning_rate
         self.batch_size = batch_size
         self.epochs = epochs
+        
+        # Construct hidden_sizes from Optuna parameters
+        if 'hidden_sizes' in kwargs:
+            hidden_sizes = kwargs.pop('hidden_sizes')
+        else:
+            hidden_sizes = []
+            n_layers = kwargs.pop('n_layers', 2)  # Default to 2 layers if not specified
+            for i in range(n_layers):
+                layer_size = kwargs.pop(f'layer_{i}_size', 64)  # Default to 64 if not specified
+                hidden_sizes.append(layer_size)
+        
+        self.hidden_sizes = hidden_sizes
         
         if device is None:
             self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -57,6 +71,7 @@ class NeuralNetworkModel:
             self.device = torch.device(device)
             
         self.model = NeuralNetwork(input_size, hidden_sizes, output_size, **kwargs)
+        
         self.model.to(self.device)
         self.optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
         self.criterion = nn.CrossEntropyLoss()
@@ -108,4 +123,13 @@ class NeuralNetworkModel:
             'batch_size': self.batch_size,
             'epochs': self.epochs,
             'device': str(self.device)
-        } 
+        }
+
+    def get_model_structure(self):
+        """Returns a string representation of the model structure"""
+        structure = f"Neural Network Structure:\n"
+        structure += f"Input Layer: {self.input_size} features\n"
+        for i, size in enumerate(self.hidden_sizes):
+            structure += f"Hidden Layer {i+1}: {size} neurons\n"
+        structure += f"Output Layer: {self.output_size} neurons"
+        return structure 
