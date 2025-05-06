@@ -1,5 +1,5 @@
 from xgboost import XGBClassifier
-from training.ModelOptimizer import ModelOptimizer
+from training.hyperparams_search.ModelOptimizer import ModelOptimizer
 
 class XGBoostOptimizer(ModelOptimizer):
     def __init__(self, random_state=42, scoring='f1_macro', cv=5):

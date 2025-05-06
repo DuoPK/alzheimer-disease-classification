@@ -1,9 +1,9 @@
-from sklearn.tree import DecisionTreeClassifier
-from training.ClassificationMetrics import ClassificationMetrics
+from sklearn.svm import SVC
+from training.utils.ClassificationMetrics import ClassificationMetrics
 
-class DecisionTreeModel:
+class SVCModel:
     def __init__(self, **kwargs):
-        self.model = DecisionTreeClassifier(**kwargs)
+        self.model = SVC(**kwargs)
 
     def train(self, X_train, y_train):
         self.model.fit(X_train, y_train)
