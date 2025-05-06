@@ -1,5 +1,5 @@
 from xgboost import XGBClassifier
-from training.ClassificationMetrics import ClassificationMetrics
+from training.utils.ClassificationMetrics import ClassificationMetrics
 
 class XGBoostModel:
     def __init__(self, **kwargs):

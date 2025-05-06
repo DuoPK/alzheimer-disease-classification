@@ -1,5 +1,5 @@
 from sklearn.tree import DecisionTreeClassifier
-from training.ModelOptimizer import ModelOptimizer
+from training.hyperparams_search.ModelOptimizer import ModelOptimizer
 
 class DecisionTreeOptimizer(ModelOptimizer):
     def __init__(self, random_state=42, scoring='f1_macro', cv=5):
