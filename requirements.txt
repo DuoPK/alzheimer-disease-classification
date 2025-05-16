@@ -7,3 +7,5 @@ scikit-learn~=1.6.1
 kagglehub~=0.3.10
 catboost
 xgboost
+optuna
+torch
