@@ -1,8 +1,11 @@
 from sklearn import clone
 from sklearn.model_selection import GridSearchCV
 
+from training.utils.config import CV
+
+
 class ModelOptimizer:
-    def __init__(self, model, param_grid, scoring='f1_macro', cv=5):
+    def __init__(self, model, param_grid, scoring='f1_macro', cv=CV):
         """
         Parameters:
         - model: a preconfigured sklearn-compatible model instance (e.g., DecisionTreeClassifier())

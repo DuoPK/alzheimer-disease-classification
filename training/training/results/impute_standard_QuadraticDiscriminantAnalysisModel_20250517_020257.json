@@ -1,0 +1,151 @@
+{
+    "dataset": "impute_standard",
+    "model": "QuadraticDiscriminantAnalysisModel",
+    "hyperparameter_search": {
+        "best_params": {
+            "reg_param": 0.14568796578540524
+        },
+        "best_score": 0.7460214607130495,
+        "trials": [
+            {
+                "params": {
+                    "reg_param": 0.0
+                },
+                "mean_score": 0.7120575179253306,
+                "std_score": 0.033151752222267475,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.3745401188473625
+                },
+                "mean_score": 0.7045157531778529,
+                "std_score": 0.04132699172472337,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.9507143064099162
+                },
+                "mean_score": 0.6623974920727697,
+                "std_score": 0.0529143925811889,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.7319939418114051
+                },
+                "mean_score": 0.6790531513166292,
+                "std_score": 0.05194586120328729,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.5986584841970366
+                },
+                "mean_score": 0.6883411363130993,
+                "std_score": 0.03387596945667301,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.15601864044243652
+                },
+                "mean_score": 0.7409116808505688,
+                "std_score": 0.03218099258812855,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.15599452033620265
+                },
+                "mean_score": 0.7409116808505688,
+                "std_score": 0.03218099258812855,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.05808361216819946
+                },
+                "mean_score": 0.7386354201724208,
+                "std_score": 0.03870416211995,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.8661761457749352
+                },
+                "mean_score": 0.6707915684905356,
+                "std_score": 0.04793492069511836,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.6011150117432088
+                },
+                "mean_score": 0.6883411363130993,
+                "std_score": 0.03387596945667301,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.30962494886210656
+                },
+                "mean_score": 0.7058091208903848,
+                "std_score": 0.04174044535295384,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.19582428501447563
+                },
+                "mean_score": 0.7299760870108872,
+                "std_score": 0.03561189513268495,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.1913665237184909
+                },
+                "mean_score": 0.7287730794920902,
+                "std_score": 0.035256261418878485,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.42927674106662667
+                },
+                "mean_score": 0.7025800981899384,
+                "std_score": 0.04309458957873991,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "reg_param": 0.14568796578540524
+                },
+                "mean_score": 0.7460214607130495,
+                "std_score": 0.02976431135158173,
+                "status": "success"
+            }
+        ]
+    },
+    "custom_cv_results": {},
+    "sklearn_cv_results": {},
+    "final_test_results": {
+        "metrics": {
+            "accuracy": 0.819672131147541,
+            "f1_score": 0.7116104868913857,
+            "confusion_matrix": [
+                [
+                    255,
+                    21
+                ],
+                [
+                    56,
+                    95
+                ]
+            ]
+        },
+        "training_time": 0.0070018768310546875
+    }
+}

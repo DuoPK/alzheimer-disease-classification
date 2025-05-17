@@ -1,0 +1,151 @@
+{
+    "dataset": "impute_minmax",
+    "model": "GaussianNBModel",
+    "hyperparameter_search": {
+        "best_params": {
+            "var_smoothing": 1e-09
+        },
+        "best_score": 0.7031386725991843,
+        "trials": [
+            {
+                "params": {
+                    "var_smoothing": 1e-09
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 1.767016940294796e-07
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 0.0005061576888752308
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 2.4658329458549116e-05
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 3.907967156822883e-06
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 8.632008168602542e-09
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 8.629132190071872e-09
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 2.2310108018679215e-09
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 0.00015741890047456646
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 4.042872735027333e-06
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 1.0151517967565016e-07
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 2.731346937698053e-07
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 4.6073363258330396e-08
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 1.3002317820620168e-09
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "var_smoothing": 6.449849031860626e-07
+                },
+                "mean_score": 0.7031386725991843,
+                "std_score": 0.01988870757595913,
+                "status": "success"
+            }
+        ]
+    },
+    "custom_cv_results": {},
+    "sklearn_cv_results": {},
+    "final_test_results": {
+        "metrics": {
+            "accuracy": 0.765807962529274,
+            "f1_score": 0.6644295302013423,
+            "confusion_matrix": [
+                [
+                    228,
+                    48
+                ],
+                [
+                    52,
+                    99
+                ]
+            ]
+        },
+        "training_time": 0.0020055770874023438
+    }
+}

@@ -1,10 +1,11 @@
 from catboost import CatBoostClassifier
 from training.utils.ClassificationMetrics import ClassificationMetrics
+from training.utils.config import RANDOM_STATE
 
 class CatBoostModel:
     def __init__(self, **kwargs):
         default_params = {
-            "verbose": 0
+            "verbose": False
         }
         model_params = {**default_params, **kwargs}
 
@@ -15,6 +16,9 @@ class CatBoostModel:
 
     def predict(self, X_test):
         return self.model.predict(X_test)
+
+    def predict_proba(self, X_test):
+        return self.model.predict_proba(X_test)
 
     def evaluate(self, X_test, y_test, positive_label=1):
         y_pred = self.predict(X_test)

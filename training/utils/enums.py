@@ -18,7 +18,7 @@ class DatasetType(Enum):
     @classmethod
     def get_dataset_path(cls, dataset_type: 'DatasetType') -> str:
         """Get full path to the dataset"""
-        return f"data_generation/data/{dataset_type.value}"
+        return f"../data_generation/data/{dataset_type.value}"
     
     @classmethod
     def get_dataset_name(cls, dataset_type: 'DatasetType') -> str:
@@ -27,11 +27,16 @@ class DatasetType(Enum):
 
 class ModelType(Enum):
     """Enum for available models"""
-    NEURAL_NETWORK = "NeuralNetworkModel"
+    # NEURAL_NETWORK = "NeuralNetworkModel"
     SVM = "SVCModel"
     CATBOOST = "CatBoostModel"
     XGBOOST = "XGBoostModel"
-    DECISION_TREE = "DecisionTreeModel"
+    RANDOM_FOREST = "RandomForestModel"
+    LOGISTIC_REGRESSION = "LogisticRegressionModel"
+    GAUSSIAN_NB = "GaussianNBModel"
+    QDA = "QuadraticDiscriminantAnalysisModel"
+    VOTING = "VotingModel"
+    STACKING = "StackingModel"
     
     @classmethod
     def get_all_models(cls) -> List['ModelType']:

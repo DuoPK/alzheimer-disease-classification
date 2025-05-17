@@ -8,4 +8,6 @@ kagglehub~=0.3.10
 catboost
 xgboost
 optuna
+optuna-dashboard
 torch
+scipy

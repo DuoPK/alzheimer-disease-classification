@@ -1,0 +1,183 @@
+{
+    "dataset": "impute_standard",
+    "model": "SVCModel",
+    "hyperparameter_search": {
+        "best_params": {
+            "C": 5.3994844097874335,
+            "kernel": "rbf",
+            "gamma": "auto"
+        },
+        "best_score": 0.7676472531183778,
+        "trials": [
+            {
+                "params": {
+                    "C": 1.0,
+                    "kernel": "rbf",
+                    "gamma": "scale"
+                },
+                "mean_score": 0.738648486027065,
+                "std_score": 0.02476847178661914,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 0.5611516415334505,
+                    "kernel": "linear",
+                    "gamma": "scale"
+                },
+                "mean_score": 0.7581535778127375,
+                "std_score": 0.021525169943076267,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 5.3994844097874335,
+                    "kernel": "rbf",
+                    "gamma": "auto"
+                },
+                "mean_score": 0.7676472531183778,
+                "std_score": 0.03265988929680609,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 0.23102018878452935,
+                    "kernel": "rbf",
+                    "gamma": 0.01
+                },
+                "mean_score": 0.6512378798158629,
+                "std_score": 0.04023919332264794,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 0.19010245319870356,
+                    "kernel": "rbf",
+                    "gamma": "auto"
+                },
+                "mean_score": 0.665201738454869,
+                "std_score": 0.03971578139976461,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 1.5304852121831465,
+                    "kernel": "rbf",
+                    "gamma": 0.01
+                },
+                "mean_score": 0.7515258938163619,
+                "std_score": 0.03131437878435409,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 4.138040112561017,
+                    "kernel": "linear",
+                    "gamma": "scale"
+                },
+                "mean_score": 0.7643685975376436,
+                "std_score": 0.027477721435423683,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 0.1171593739230706,
+                    "kernel": "linear",
+                    "gamma": "scale"
+                },
+                "mean_score": 0.7591805236387117,
+                "std_score": 0.019788948070145754,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 0.23426581058204046,
+                    "kernel": "linear",
+                    "gamma": "scale"
+                },
+                "mean_score": 0.7633190823391275,
+                "std_score": 0.0200182747603545,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 0.15030900645056822,
+                    "kernel": "linear",
+                    "gamma": 0.01
+                },
+                "mean_score": 0.7623946729577584,
+                "std_score": 0.021694432417620528,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 9.071731730117335,
+                    "kernel": "rbf",
+                    "gamma": "auto"
+                },
+                "mean_score": 0.7629156833297576,
+                "std_score": 0.030412116072341726,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 5.922550504405781,
+                    "kernel": "linear",
+                    "gamma": 0.1
+                },
+                "mean_score": 0.7643685975376436,
+                "std_score": 0.027477721435423683,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 3.4612606781651314,
+                    "kernel": "linear",
+                    "gamma": "auto"
+                },
+                "mean_score": 0.7631023885368808,
+                "std_score": 0.029212344886499486,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 2.9978582191230547,
+                    "kernel": "rbf",
+                    "gamma": 0.1
+                },
+                "mean_score": 0.7377179121379628,
+                "std_score": 0.032783365856313765,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "C": 3.370279220379387,
+                    "kernel": "linear",
+                    "gamma": "auto"
+                },
+                "mean_score": 0.7631023885368808,
+                "std_score": 0.029212344886499486,
+                "status": "success"
+            }
+        ]
+    },
+    "custom_cv_results": {},
+    "sklearn_cv_results": {},
+    "final_test_results": {
+        "metrics": {
+            "accuracy": 0.8360655737704918,
+            "f1_score": 0.7619047619047619,
+            "confusion_matrix": [
+                [
+                    245,
+                    31
+                ],
+                [
+                    39,
+                    112
+                ]
+            ]
+        },
+        "training_time": 0.2645292282104492
+    }
+}
