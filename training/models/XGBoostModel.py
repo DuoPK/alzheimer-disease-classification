@@ -1,5 +1,7 @@
 from xgboost import XGBClassifier
 from training.utils.ClassificationMetrics import ClassificationMetrics
+from training.utils.config import RANDOM_STATE
+
 
 class XGBoostModel:
     def __init__(self, **kwargs):
@@ -7,7 +9,6 @@ class XGBoostModel:
             "eval_metric": "logloss"
         }
         model_params = {**default_params, **kwargs}
-
         self.model = XGBClassifier(**model_params)
 
     def train(self, X_train, y_train):
@@ -15,6 +16,9 @@ class XGBoostModel:
 
     def predict(self, X_test):
         return self.model.predict(X_test)
+
+    def predict_proba(self, X_test):
+        return self.model.predict_proba(X_test)
 
     def evaluate(self, X_test, y_test, positive_label=1):
         y_pred = self.predict(X_test)

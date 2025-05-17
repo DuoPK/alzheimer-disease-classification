@@ -1,8 +1,10 @@
 from sklearn.tree import DecisionTreeClassifier
 from training.hyperparams_search.ModelOptimizer import ModelOptimizer
+from training.utils.config import RANDOM_STATE, CV
+
 
 class DecisionTreeOptimizer(ModelOptimizer):
-    def __init__(self, random_state=42, scoring='f1_macro', cv=5):
+    def __init__(self, random_state=RANDOM_STATE, scoring='f1_macro', cv=CV):
         self.random_state = random_state
 
         model = DecisionTreeClassifier(random_state=self.random_state)

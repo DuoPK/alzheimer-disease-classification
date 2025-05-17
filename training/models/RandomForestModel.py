@@ -1,15 +1,21 @@
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 from training.utils.ClassificationMetrics import ClassificationMetrics
+from training.utils.config import RANDOM_STATE
 
-class DecisionTreeModel:
+class RandomForestModel:
     def __init__(self, **kwargs):
-        self.model = DecisionTreeClassifier(**kwargs)
+        default_params = {}
+        model_params = {**default_params, **kwargs}
+        self.model = RandomForestClassifier(**model_params)
 
     def train(self, X_train, y_train):
         self.model.fit(X_train, y_train)
 
     def predict(self, X_test):
         return self.model.predict(X_test)
+
+    def predict_proba(self, X_test):
+        return self.model.predict_proba(X_test)
 
     def evaluate(self, X_test, y_test, positive_label=1):
         y_pred = self.predict(X_test)

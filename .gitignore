@@ -1,7 +1,11 @@
 catboost_info/
 
-#*.csv
+#*.json
 #*.jpg
+#*.png
+*.log
+#*.db
+#*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

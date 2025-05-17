@@ -1,11 +1,13 @@
 from training.utils.ClassificationMetrics import ClassificationMetrics
+from training.utils.config import RANDOM_STATE, N_JOBS
 
 import numpy as np
 from collections import defaultdict
 import copy
+from sklearn.model_selection import StratifiedKFold
 
 class CrossValidator:
-    def __init__(self, model, k=5, random_state=42, positive_label=1, epochs=None):
+    def __init__(self, model, k=5, random_state=RANDOM_STATE, positive_label=1, epochs=None):
         """
         Parameters:
         - model: model
@@ -21,6 +23,7 @@ class CrossValidator:
         self.epochs = epochs
 
     def split_stratified(self, X, y):
+        """Custom stratified split implementation"""
         np.random.seed(self.random_state)
         X = np.array(X)
         y = np.array(y)
@@ -44,29 +47,38 @@ class CrossValidator:
         return splits
 
     def evaluate(self, X, y):
-        X = np.array(X)
-        y = np.array(y)
-
+        """
+        Evaluate model using k-fold cross-validation
+        
+        Args:
+            X (numpy.ndarray): Features
+            y (numpy.ndarray): Labels
+            
+        Returns:
+            dict: Dictionary containing evaluation metrics
+        """
+        # Custom CV evaluation
         acc_scores = []
         f1_scores = []
         fold_metrics = []
-
+        
         for fold_idx, (train_idx, test_idx) in enumerate(self.split_stratified(X, y)):
             X_train, X_test = X[train_idx], X[test_idx]
             y_train, y_test = y[train_idx], y[test_idx]
-
+            
             # Clone the model for each fold (to reset weights/state)
             model = copy.deepcopy(self.model)
             
             # Train the model with specified epochs if supported
-            if hasattr(model, 'train') and callable(getattr(model, 'train')):
+            if hasattr(model, 'train'):
                 if self.epochs is not None and hasattr(model, 'epochs'):
                     model.train(X_train, y_train, epochs=self.epochs)
                 else:
                     model.train(X_train, y_train)
             
             y_pred = model.predict(X_test)
-
+            
+            # Calculate metrics using ClassificationMetrics
             metrics = ClassificationMetrics(y_test, y_pred, positive_label=self.positive_label)
             acc_scores.append(metrics.accuracy())
             f1_scores.append(metrics.f1_score())

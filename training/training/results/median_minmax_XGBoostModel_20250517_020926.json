@@ -1,0 +1,199 @@
+{
+    "dataset": "median_minmax",
+    "model": "XGBoostModel",
+    "hyperparameter_search": {
+        "best_params": {
+            "n_estimators": 100,
+            "learning_rate": 0.08889667907018929,
+            "max_depth": 8,
+            "min_child_weight": 5
+        },
+        "best_score": 0.9279710547609765,
+        "trials": [
+            {
+                "params": {
+                    "n_estimators": 100,
+                    "learning_rate": 0.1,
+                    "max_depth": 6,
+                    "min_child_weight": 1
+                },
+                "mean_score": 0.9215707746872386,
+                "std_score": 0.020796265703294115,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 200,
+                    "learning_rate": 0.08927180304353628,
+                    "max_depth": 7,
+                    "min_child_weight": 3
+                },
+                "mean_score": 0.9224281217418812,
+                "std_score": 0.0149391889197547,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 100,
+                    "learning_rate": 0.01432169828911152,
+                    "max_depth": 3,
+                    "min_child_weight": 5
+                },
+                "mean_score": 0.8419968654867723,
+                "std_score": 0.04231012560946009,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 400,
+                    "learning_rate": 0.051059032093947576,
+                    "max_depth": 3,
+                    "min_child_weight": 5
+                },
+                "mean_score": 0.9209889886311824,
+                "std_score": 0.020896340145436676,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 500,
+                    "learning_rate": 0.016305687346221478,
+                    "max_depth": 4,
+                    "min_child_weight": 1
+                },
+                "mean_score": 0.9228528500575506,
+                "std_score": 0.01348266466987831,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 200,
+                    "learning_rate": 0.03347776308515933,
+                    "max_depth": 5,
+                    "min_child_weight": 1
+                },
+                "mean_score": 0.9230561396933347,
+                "std_score": 0.02144075179330234,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 400,
+                    "learning_rate": 0.013787764619353767,
+                    "max_depth": 4,
+                    "min_child_weight": 3
+                },
+                "mean_score": 0.9264581770096278,
+                "std_score": 0.014172272211714222,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 300,
+                    "learning_rate": 0.06097839109531514,
+                    "max_depth": 4,
+                    "min_child_weight": 3
+                },
+                "mean_score": 0.9262955501485397,
+                "std_score": 0.014331893062670123,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 300,
+                    "learning_rate": 0.011128853174905732,
+                    "max_depth": 6,
+                    "min_child_weight": 1
+                },
+                "mean_score": 0.9271249760200696,
+                "std_score": 0.01958978690321946,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 100,
+                    "learning_rate": 0.08889667907018929,
+                    "max_depth": 8,
+                    "min_child_weight": 5
+                },
+                "mean_score": 0.9279710547609765,
+                "std_score": 0.015800137102437807,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 200,
+                    "learning_rate": 0.02973906577570737,
+                    "max_depth": 8,
+                    "min_child_weight": 5
+                },
+                "mean_score": 0.9279477715728545,
+                "std_score": 0.01585584338750629,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 200,
+                    "learning_rate": 0.025215338006090236,
+                    "max_depth": 8,
+                    "min_child_weight": 5
+                },
+                "mean_score": 0.927055655390282,
+                "std_score": 0.015871107436950374,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 100,
+                    "learning_rate": 0.03095777724937788,
+                    "max_depth": 8,
+                    "min_child_weight": 5
+                },
+                "mean_score": 0.922748824341338,
+                "std_score": 0.01452224917141808,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 200,
+                    "learning_rate": 0.04651609334036395,
+                    "max_depth": 7,
+                    "min_child_weight": 5
+                },
+                "mean_score": 0.9270771121163366,
+                "std_score": 0.014904060919297914,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "n_estimators": 100,
+                    "learning_rate": 0.025197243686125033,
+                    "max_depth": 8,
+                    "min_child_weight": 3
+                },
+                "mean_score": 0.9175190207058226,
+                "std_score": 0.014936037151327351,
+                "status": "success"
+            }
+        ]
+    },
+    "custom_cv_results": {},
+    "sklearn_cv_results": {},
+    "final_test_results": {
+        "metrics": {
+            "accuracy": 0.9531615925058547,
+            "f1_score": 0.9333333333333333,
+            "confusion_matrix": [
+                [
+                    267,
+                    9
+                ],
+                [
+                    11,
+                    140
+                ]
+            ]
+        },
+        "training_time": 0.09363436698913574
+    }
+}

@@ -13,6 +13,15 @@ class ClassificationMetrics:
         self.FN = np.sum((self.y_pred != self.positive_label) & (self.y_true == self.positive_label))
         self.TN = np.sum((self.y_pred != self.positive_label) & (self.y_true != self.positive_label))
 
+    def confusion_matrix(self):
+        """
+        Returns the confusion matrix as a 2x2 numpy array:
+        [[TN, FP],
+         [FN, TP]]
+        """
+        return np.array([[self.TN, self.FP],
+                        [self.FN, self.TP]])
+
     def accuracy(self):
         """
         Accuracy: (TP + TN)
@@ -30,5 +39,6 @@ class ClassificationMetrics:
     def summary(self):
         return {
             "accuracy": self.accuracy(),
-            "f1_score": self.f1_score()
+            "f1_score": self.f1_score(),
+            "confusion_matrix": self.confusion_matrix().tolist()
         }
