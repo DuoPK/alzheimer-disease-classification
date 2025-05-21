@@ -49,5 +49,26 @@ Datasets ready for classification are in the `data_generation/data` folder.
 Contains auc and confusion matrix plots.
 
 #### 2. Results of all models trained on all datasets with the best parameters
-Parameters are searched using Optuna. JSON files contain also data from each trial.
+Parameters are searched using Optuna.
 - `training/training/results/`<br>
+JSON files contain data from each trial.
+```JSON
+{
+  "hyperparameter_search": {
+    "best_params": {
+      # Best parameters for model
+    },
+    "best_score": {
+      # Best score (f1-score) for model in cross-validation (mean of all folds)
+    },
+  },
+  "final_test_results": {
+    "metrics": {
+      # Metrics for model on test set
+    },
+    "training_time": {
+      # Training time on train set
+    },
+  }
+}
+```
