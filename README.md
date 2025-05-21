@@ -33,3 +33,21 @@ And remove rows with missing dependent variable (diagnosis).<br>
 `py generator.py`
 
 Datasets ready for classification are in the `data_generation/data` folder.
+
+## Training
+
+### Run
+`cd training`<br>
+`python train_models.py`
+
+### Results
+#### 1. Results of all models trained on all datasets with default parameters
+- `training/results/metrics/metrics.csv`<br>
+`custom_cv_[metric]` columns contain metrics calculated using custom cross-validation.
+`sklearn_cv_[metric]` columns contain metrics calculated using sklearn cross-validation.
+- `training/results/plots/`<br>
+Contains auc and confusion matrix plots.
+
+#### 2. Results of all models trained on all datasets with the best parameters
+Parameters are searched using Optuna. JSON files contain also data from each trial.
+- `training/training/results/`<br>
