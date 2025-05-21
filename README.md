@@ -72,3 +72,8 @@ JSON files contain data from each trial.
   }
 }
 ```
+
+#### 3. Optuna results
+File: `training/optuna_results.db`<br>
+Run: `optuna-dashboard sqlite:///alzheimer_classification.db`
+
