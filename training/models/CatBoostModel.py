@@ -2,6 +2,7 @@ from catboost import CatBoostClassifier
 from training.utils.ClassificationMetrics import ClassificationMetrics
 from training.utils.config import RANDOM_STATE
 
+
 class CatBoostModel:
     def __init__(self, **kwargs):
         default_params = {
