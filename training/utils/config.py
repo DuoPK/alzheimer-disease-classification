@@ -27,8 +27,16 @@ def set_random_state():
 
 CV = 5
 TEST_SIZE = 0.2
-N_TRIALS = 25
+N_TRIALS = 5
 SCORING_OPTUNA = 'f1_score'
+
+SELECT_KBEST = False
+K_BEST = 10  # Number of features to select if using SelectKBest
+
+# Optuna feature selection configuration
+USE_OPTUNA_FEATURE_SELECTION = True  # Whether to use Optuna for feature selection
+MIN_FEATURES_TO_SELECT = 5  # Minimum number of features to select by Optuna
+MAX_FEATURES_TO_SELECT = 20  # Maximum number of features to select by Optuna
 
 # Multiprocessing configuration
 N_JOBS = os.cpu_count() - 1  # Leave one CPU free for system processes

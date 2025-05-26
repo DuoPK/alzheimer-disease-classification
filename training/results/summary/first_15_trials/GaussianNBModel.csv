@@ -1,0 +1,7 @@
+dataset,model,best_params,final_test_results-accuracy,final_test_results-f1_score,final_test_results-training_time
+impute_minmax,GaussianNBModel,"{""var_smoothing"": 1e-09}",0.765807962529274,0.6644295302013423,0.0020055770874023438
+impute_standard,GaussianNBModel,"{""var_smoothing"": 0.0005061576888752308}",0.7681498829039812,0.6666666666666666,0.0009822845458984375
+mean_minmax,GaussianNBModel,"{""var_smoothing"": 1e-09}",0.765807962529274,0.6644295302013423,0.001001119613647461
+mean_standard,GaussianNBModel,"{""var_smoothing"": 1e-09}",0.765807962529274,0.6644295302013423,0.0010004043579101562
+median_minmax,GaussianNBModel,"{""var_smoothing"": 1e-09}",0.765807962529274,0.6644295302013423,0.0010020732879638672
+median_standard,GaussianNBModel,"{""var_smoothing"": 1e-09}",0.765807962529274,0.6644295302013423,0.0020020008087158203

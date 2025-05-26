@@ -12,7 +12,7 @@ class ResultsLogger:
         """Initialize ResultsLogger with directories for saving results"""
         self.results_dir = os.path.join('results', results_base_dir, 'metrics')
         self.plots_dir = os.path.join('results', results_base_dir, 'plots')
-        self.metrics_file = os.path.join(self.results_dir, 'metrics.csv')
+        self.metrics_file = os.path.join(self.results_dir, 'default_params_metrics.csv')
 
         # Create directories if they don't exist
         os.makedirs(self.results_dir, exist_ok=True)

@@ -6,6 +6,7 @@ import time
 import json
 import logging
 from datetime import datetime
+from sklearn.feature_selection import SelectKBest, f_classif
 
 from training.CrossValidator import CrossValidator
 from training.models.RandomForestModel import RandomForestModel
@@ -14,8 +15,9 @@ from training.utils.StratifiedTrainTestSplitter import StratifiedTrainTestSplitt
 from training.hyper_search.optuna_search import OptunaSearch
 from training.utils.enums import DatasetType, ModelType
 from training.utils.config import (
-    RANDOM_STATE, SKLEARN_PARAMS, XGBOOST_PARAMS,
-    CATBOOST_PARAMS, OPTUNA_PARAMS, set_random_state, CV, N_TRIALS, TEST_SIZE, MODEL_WITHOUT_N_JOBS_PARAM
+    RANDOM_STATE, SKLEARN_PARAMS, USE_OPTUNA_FEATURE_SELECTION, XGBOOST_PARAMS,
+    CATBOOST_PARAMS, OPTUNA_PARAMS, set_random_state, CV, N_TRIALS, TEST_SIZE, MODEL_WITHOUT_N_JOBS_PARAM, SELECT_KBEST,
+    K_BEST
 )
 
 # Import all models
@@ -31,18 +33,19 @@ from training.models.StackingModel import StackingModel
 from scipy import linalg
 
 warnings.filterwarnings("ignore", category=linalg.LinAlgWarning)
+datetime_dir_name = datetime.now().strftime('%Y%m%d_%H%M%S')
 
 # Model mapping
 MODEL_CLASSES = {
-    ModelType.SVM: SVCModel,
+    # ModelType.SVM: SVCModel,
     ModelType.CATBOOST: CatBoostModel,
     ModelType.XGBOOST: XGBoostModel,
     ModelType.RANDOM_FOREST: RandomForestModel,
-    ModelType.LOGISTIC_REGRESSION: LogisticRegressionModel,
-    ModelType.GAUSSIAN_NB: GaussianNBModel,
-    ModelType.QDA: QuadraticDiscriminantAnalysisModel,
-    ModelType.VOTING: VotingModel,
-    ModelType.STACKING: StackingModel
+    # ModelType.LOGISTIC_REGRESSION: LogisticRegressionModel,
+    # ModelType.GAUSSIAN_NB: GaussianNBModel,
+    # ModelType.QDA: QuadraticDiscriminantAnalysisModel,
+    # ModelType.VOTING: VotingModel,
+    # ModelType.STACKING: StackingModel
 }
 
 def setup_logging(dataset_name, model_name):
@@ -66,23 +69,34 @@ def load_dataset(file_path):
     df = pd.read_csv(file_path)
     X = df.drop('Diagnosis', axis=1).values
     y = df['Diagnosis'].values
-    return X, y
+    feature_names = df.drop('Diagnosis', axis=1).columns.tolist()
+    return X, y, feature_names
 
 def get_model_class(model_type: ModelType):
     """Get a model class from the model type"""
     return MODEL_CLASSES[model_type]
 
-def train_and_evaluate_model(model_type: ModelType, dataset_type: DatasetType):
+def train_and_evaluate_model(model_type: ModelType, dataset_type: DatasetType, use_select_kbest=False, k_best=None):
     # Setup logging
     dataset_name = DatasetType.get_dataset_name(dataset_type)
     model_name = ModelType.get_model_class_name(model_type)
     logger = setup_logging(dataset_name, model_name)
     
     logger.info(f"Starting training for {model_name} on {dataset_name}")
+    if use_select_kbest:
+        logger.info(f"Using SelectKBest with k={k_best}")
     
     # Load data
     dataset_path = DatasetType.get_dataset_path(dataset_type)
-    X, y = load_dataset(dataset_path)
+    X, y, feature_names = load_dataset(dataset_path)
+    
+    # Apply SelectKBest if enabled
+    if use_select_kbest:
+        selector = SelectKBest(score_func=f_classif, k=k_best)
+        X = selector.fit_transform(X, y)
+        selected_indices = selector.get_support(indices=True)
+        feature_names = [feature_names[i] for i in selected_indices]
+        logger.info(f"Selected {k_best} best features using f_classif")
     
     # Split into train and test sets using custom StratifiedTrainTestSplitter
     splitter = StratifiedTrainTestSplitter(test_size=TEST_SIZE, random_state=RANDOM_STATE)
@@ -92,6 +106,11 @@ def train_and_evaluate_model(model_type: ModelType, dataset_type: DatasetType):
     results = {
         "dataset": dataset_name,
         "model": model_name,
+        "feature_selection": {
+            "used": use_select_kbest,
+            "k_best": k_best if use_select_kbest else None,
+            "feature_names": feature_names
+        },
         "hyperparameter_search": {},
         "custom_cv_results": {},
         "sklearn_cv_results": {},
@@ -109,7 +128,9 @@ def train_and_evaluate_model(model_type: ModelType, dataset_type: DatasetType):
         cv=CV,
         scoring='f1_score',
         **OPTUNA_PARAMS,
-        log_default_params=False
+        log_default_params=False,
+        k_best=k_best,
+        feature_names=feature_names
     )
     
     # Run hyperparameter optimization
@@ -125,6 +146,22 @@ def train_and_evaluate_model(model_type: ModelType, dataset_type: DatasetType):
     logger.info("Starting final training and testing with best parameters")
     
     model_best_params = optuna_search.best_params_.copy()
+    
+    # Apply feature selection if enabled
+    if USE_OPTUNA_FEATURE_SELECTION:
+        # Get selected feature indices
+        selected_indices = []
+        for i, feature in enumerate(feature_names):
+            param_name = f'feature_{feature}'
+            if param_name in model_best_params and model_best_params[param_name] == 1:
+                selected_indices.append(i)
+                # Remove feature selection parameter
+                del model_best_params[param_name]
+        
+        # Apply selection to test data
+        X_test = X_test[:, selected_indices]
+        X_train = X_train[:, selected_indices]
+    
     model_all_params = model_type.get_params_from_optuna_params(model_best_params)
     
     final_model = model_class(**model_all_params)
@@ -142,7 +179,14 @@ def train_and_evaluate_model(model_type: ModelType, dataset_type: DatasetType):
     }
     
     # Save results
-    results_dir = f"training/results/{datetime.now().strftime('%Y%m%d')}"
+    base_results_dir = "training/results"
+    subcatalog = "optuna"
+    if USE_OPTUNA_FEATURE_SELECTION:
+        subcatalog = f"{subcatalog}_select-features-by-optuna"
+    if use_select_kbest:
+        subcatalog = f"{subcatalog}_select-kbest"
+    results_dir = f"{base_results_dir}/{subcatalog}/{datetime_dir_name}"
+    
     os.makedirs(results_dir, exist_ok=True)
     results_file = f"{results_dir}/{dataset_name}_{model_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     
@@ -158,10 +202,9 @@ def main():
     
     # Train each model on each dataset
     for dataset_type in DatasetType.get_all_datasets():
-        # for model_type in ModelType.get_all_models():
         for model_type in MODEL_CLASSES.keys():
             try:
-                train_and_evaluate_model(model_type, dataset_type)
+                train_and_evaluate_model(model_type, dataset_type, SELECT_KBEST, K_BEST)
             except Exception as e:
                 logging.error(f"Error training {model_type} on {dataset_type}: {str(e)}")
 
