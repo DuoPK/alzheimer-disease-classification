@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import optuna
 import numpy as np
 from optuna import TrialPruned
@@ -10,10 +12,13 @@ from training.utils.ClassificationMetrics import ClassificationMetrics
 from training.CrossValidator import CrossValidator
 from training.utils.config import CV, N_TRIALS, RANDOM_STATE, SCORING_OPTUNA
 
+optuna.logging.set_verbosity(optuna.logging.DEBUG)
+
 
 class OptunaSearch:
     def __init__(self, model_class, model_name, input_size=None, output_size=None, 
-                 n_trials=N_TRIALS, cv=CV, scoring=SCORING_OPTUNA, random_state=RANDOM_STATE):
+                 n_trials=N_TRIALS, cv=CV, scoring=SCORING_OPTUNA, random_state=RANDOM_STATE,
+                 log_default_params=True):
         """
         Parameters:
         - model_class: class of the model to optimize
@@ -36,7 +41,12 @@ class OptunaSearch:
         self.best_params_ = None
         self.best_score_ = None
         self.trials_ = []
-        self.results_logger = ResultsLogger()
+        self.log_default_params = log_default_params
+        results_base_dir_date = datetime.now().strftime('%Y%m%d_%H%M%S')
+        if self.log_default_params:
+            self.results_logger = ResultsLogger(results_base_dir_date)
+        else:
+            self.results_logger = None
         
         # Configure logger
         self.logger = logging.getLogger(__name__)
@@ -82,7 +92,9 @@ class OptunaSearch:
             # Sklearn Cross-validation for optimization
             skf = StratifiedKFold(n_splits=self.cv, shuffle=True, random_state=self.random_state)
             scores = []
-            
+
+            # Create a copy of X and y to avoid modifying original data
+
             for train_idx, val_idx in skf.split(X, y):
                 X_train, X_val = X[train_idx], X[val_idx]
                 y_train, y_val = y[train_idx], y[val_idx]
@@ -90,7 +102,7 @@ class OptunaSearch:
                 # Initialize and train the model
                 model = self.model_class(**params)
                 if hasattr(model, 'train'):
-                    model.train(X_train, y_train)
+                    model.train(np.array(X_train, copy=True), np.array(y_train, copy=True))
                 
                 y_pred = model.predict(X_val)
                 
@@ -236,6 +248,18 @@ class OptunaSearch:
     
     def _suggest_voting_params(self, trial):
         """Suggest hyperparameters for Voting Classifier"""
+        # Suggest parameters for base models
+        lr_params = {
+            'C': trial.suggest_float('lr_C', 0.001, 100.0, log=True),
+            'max_iter': trial.suggest_int('lr_max_iter', 100, 2000, step=100)
+        }
+        gnb_params = {
+            'var_smoothing': trial.suggest_float('gnb_var_smoothing', 1e-9, 1e-3, log=True)
+        }
+        qda_params = {
+            'reg_param': trial.suggest_float('qda_reg_param', 0.0, 1.0)
+        }
+
         # Suggest weights for each base model
         weights = [
             trial.suggest_float('voting_weight_lr', 0.1, 2.0),
@@ -245,7 +269,10 @@ class OptunaSearch:
         
         return {
             'voting': trial.suggest_categorical('voting', ['hard', 'soft']),
-            'weights': weights
+            'weights': weights,
+            'lr_params': lr_params,
+            'gnb_params': gnb_params,
+            'qda_params': qda_params
         }
     
     def _suggest_stacking_params(self, trial):
@@ -255,11 +282,9 @@ class OptunaSearch:
             'C': trial.suggest_float('lr_C', 0.001, 100.0, log=True),
             'max_iter': trial.suggest_int('lr_max_iter', 100, 2000, step=100)
         }
-        
         gnb_params = {
             'var_smoothing': trial.suggest_float('gnb_var_smoothing', 1e-9, 1e-3, log=True)
         }
-        
         qda_params = {
             'reg_param': trial.suggest_float('qda_reg_param', 0.0, 1.0)
         }
@@ -387,33 +412,38 @@ class OptunaSearch:
             'std_f1_score': np.std(sk_f1_scores),
             'training_time': sklearn_cv_time
         }
-        
-        # Log results
-        self.results_logger.log_default_params_results(
-            dataset_name, self.model_name, custom_cv_results, sklearn_cv_results
-        )
-        
-        # Save plots
-        self.results_logger.save_confusion_matrix(
-            np.array(y_true_all), np.array(y_pred_all), dataset_name, self.model_name
-        )
-        self.results_logger.save_roc_curve(
-            np.array(y_true_all), np.array(y_pred_proba_all), dataset_name, self.model_name
-        )
+
+        if self.log_default_params:
+            # Log results
+            self.results_logger.log_default_params_results(
+                dataset_name, self.model_name, custom_cv_results, sklearn_cv_results
+            )
+            # Save plots
+            self.results_logger.save_confusion_matrix(
+                np.array(y_true_all), np.array(y_pred_all), dataset_name, self.model_name
+            )
+            self.results_logger.save_roc_curve(
+                np.array(y_true_all), np.array(y_pred_proba_all), dataset_name, self.model_name
+            )
         
         return default_params
 
     def fit(self, X, y, dataset_name):
         """Find the best parameters using Optuna optimization"""
-        # First, evaluate with default parameters using both custom and sklearn CV
-        default_params = self._evaluate_default_params(X, y, dataset_name)
-        
         # Create study and enqueue default parameters trial
         study = optuna.create_study(direction='maximize',
-                                    storage="sqlite:///alzheimer_classification.db",
+                                    storage="sqlite:///alzheimer_classification_v2.db",
                                     load_if_exists=True,
                                     study_name=f"{self.model_name}_{dataset_name}",
                                     sampler=TPESampler(seed=self.random_state))
+
+        # First, add run with default parameters
+        if self.log_default_params:
+            # Evaluate and log - using both custom and sklearn CV
+            default_params = self._evaluate_default_params(X, y, dataset_name)
+        else:
+            default_params = self._get_default_params()
+        self.logger.info("Add default parameters before optimization...")
         study.enqueue_trial(default_params)
         
         # Run optimization using sklearn CV

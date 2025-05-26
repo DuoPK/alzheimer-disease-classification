@@ -1,0 +1,309 @@
+{
+    "dataset": "impute_standard",
+    "model": "CatBoostModel",
+    "hyperparameter_search": {
+        "best_params": {
+            "iterations": 500,
+            "learning_rate": 0.07506539928118568,
+            "depth": 8,
+            "l2_leaf_reg": 5
+        },
+        "best_score": 0.9379908434470794,
+        "trials": [
+            {
+                "params": {
+                    "iterations": 100,
+                    "learning_rate": 0.1,
+                    "depth": 6,
+                    "l2_leaf_reg": 3
+                },
+                "mean_score": 0.9335882026915474,
+                "std_score": 0.01701144054468834,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 400,
+                    "learning_rate": 0.021215684762213603,
+                    "depth": 4,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9308994267632128,
+                "std_score": 0.01667921491588468,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.04810780872301813,
+                    "depth": 8,
+                    "l2_leaf_reg": 3
+                },
+                "mean_score": 0.9353570985911123,
+                "std_score": 0.015277499462930258,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.04615734144158724,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9354586000848016,
+                "std_score": 0.016672348611735225,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.04759948004063469,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9354586000848016,
+                "std_score": 0.016672348611735225,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.041813441903422996,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9353570985911123,
+                "std_score": 0.015277499462930258,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.06479807998573993,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9362422991443626,
+                "std_score": 0.015262812115271012,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.07009411640104514,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.934573856763242,
+                "std_score": 0.016848857485624407,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.06696955939006377,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9362422991443626,
+                "std_score": 0.015262812115271012,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.06772809630243411,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9352936825435721,
+                "std_score": 0.016972490865095016,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.058446231926001097,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9362422991443626,
+                "std_score": 0.015262812115271012,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 400,
+                    "learning_rate": 0.057883276388026164,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9353570985911123,
+                "std_score": 0.015277499462930258,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.07506539928118568,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9379908434470794,
+                "std_score": 0.015826821381137963,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 200,
+                    "learning_rate": 0.07658908484943713,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9326796381827179,
+                "std_score": 0.016002449844650157,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 400,
+                    "learning_rate": 0.07993448085354198,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9354517416094407,
+                "std_score": 0.017104376453356378,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.04020586618485421,
+                    "depth": 6,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9337358142891489,
+                "std_score": 0.01538873598722634,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.060363888226146585,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9354586000848016,
+                "std_score": 0.016672348611735225,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.08341851733995048,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9354586000848016,
+                "std_score": 0.016672348611735225,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.06755277470263496,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9362354406690017,
+                "std_score": 0.015733933686600657,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 400,
+                    "learning_rate": 0.054271861536838294,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9327960481207309,
+                "std_score": 0.016887867463331426,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.09582268305798586,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9347359552012025,
+                "std_score": 0.016566751227285015,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.07214801068037982,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9363224010659588,
+                "std_score": 0.01752864885765881,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 400,
+                    "learning_rate": 0.07340653670403331,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9352868240682113,
+                "std_score": 0.017397001742451203,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 500,
+                    "learning_rate": 0.04027340332692705,
+                    "depth": 8,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9362422991443626,
+                "std_score": 0.015262812115271012,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "iterations": 400,
+                    "learning_rate": 0.06560428803240363,
+                    "depth": 6,
+                    "l2_leaf_reg": 5
+                },
+                "mean_score": 0.9354919452820052,
+                "std_score": 0.015962555676740903,
+                "status": "success"
+            }
+        ]
+    },
+    "custom_cv_results": {},
+    "sklearn_cv_results": {},
+    "final_test_results": {
+        "metrics": {
+            "accuracy": 0.9578454332552693,
+            "f1_score": 0.94,
+            "confusion_matrix": [
+                [
+                    268,
+                    8
+                ],
+                [
+                    10,
+                    141
+                ]
+            ]
+        },
+        "training_time": 3.551461935043335
+    }
+}

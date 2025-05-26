@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import roc_curve, auc
@@ -9,10 +8,10 @@ from training.utils.ClassificationMetrics import ClassificationMetrics
 
 
 class ResultsLogger:
-    def __init__(self):
+    def __init__(self, results_base_dir='results'):
         """Initialize ResultsLogger with directories for saving results"""
-        self.results_dir = os.path.join('results', 'metrics')
-        self.plots_dir = os.path.join('results', 'plots')
+        self.results_dir = os.path.join('results', results_base_dir, 'metrics')
+        self.plots_dir = os.path.join('results', results_base_dir, 'plots')
         self.metrics_file = os.path.join(self.results_dir, 'metrics.csv')
 
         # Create directories if they don't exist
@@ -32,6 +31,12 @@ class ResultsLogger:
                 'sklearn_cv_std_accuracy', 'sklearn_cv_std_f1_score',
                 'sklearn_cv_training_time'
             ])
+
+        self.font_title_size = 20
+        self.font_label_size = 18
+        self.font_tick_size = 16
+        self.font_annot_size = 20
+        self.font_legend_size = 16
 
     def log_default_params_results(self, dataset_name, model_name, custom_cv_results, sklearn_cv_results):
         """Log results for default parameters"""
@@ -57,16 +62,22 @@ class ResultsLogger:
         self.metrics_df.to_csv(self.metrics_file, index=False)
 
     def save_confusion_matrix(self, y_true, y_pred, dataset_name, model_name):
-        """Save confusion matrix plot"""
-        # Calculate confusion matrix using ClassificationMetrics
         metrics = ClassificationMetrics(y_true, y_pred)
         cm = metrics.confusion_matrix()
 
         plt.figure(figsize=(10, 8))
-        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-        plt.title(f'Confusion Matrix - {model_name} on {dataset_name}')
-        plt.ylabel('True Label')
-        plt.xlabel('Predicted Label')
+        sns.heatmap(
+            cm,
+            annot=True,
+            fmt='d',
+            cmap='Blues',
+            annot_kws={'size': self.font_annot_size}
+        )
+        plt.title(f'Confusion Matrix - {model_name} on {dataset_name}', fontsize=self.font_title_size)
+        plt.ylabel('True Label', fontsize=self.font_label_size)
+        plt.xlabel('Predicted Label', fontsize=self.font_label_size)
+        plt.xticks(fontsize=self.font_tick_size)
+        plt.yticks(fontsize=self.font_tick_size)
 
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f'confusion_matrix_{dataset_name}_{model_name}_{timestamp}.png'
@@ -74,7 +85,6 @@ class ResultsLogger:
         plt.close()
 
     def save_roc_curve(self, y_true, y_pred_proba, dataset_name, model_name):
-        """Save ROC curve plot"""
         fpr, tpr, _ = roc_curve(y_true, y_pred_proba[:, 1])
         roc_auc = auc(fpr, tpr)
 
@@ -83,10 +93,12 @@ class ResultsLogger:
         plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
         plt.xlim([0.0, 1.0])
         plt.ylim([0.0, 1.05])
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title(f'ROC Curve - {model_name} on {dataset_name}')
-        plt.legend(loc="lower right")
+        plt.xlabel('False Positive Rate', fontsize=self.font_label_size)
+        plt.ylabel('True Positive Rate', fontsize=self.font_label_size)
+        plt.title(f'ROC Curve - {model_name} on {dataset_name}', fontsize=self.font_title_size)
+        plt.legend(loc="lower right", fontsize=self.font_legend_size)
+        plt.xticks(fontsize=self.font_tick_size)
+        plt.yticks(fontsize=self.font_tick_size)
 
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f'roc_curve_{dataset_name}_{model_name}_{timestamp}.png'

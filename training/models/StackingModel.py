@@ -10,7 +10,7 @@ from training.utils.config import CV, RANDOM_STATE, N_JOBS
 class StackingModel:
     def __init__(self, cv=CV, lr_params=None, gnb_params=None, qda_params=None,
                  final_estimator_params=None,
-                 random_state=RANDOM_STATE, n_jobs=N_JOBS, **kwargs):
+                 random_state=RANDOM_STATE, n_jobs=N_JOBS):
         """
         Initialize a Stacking Classifier model
         
@@ -20,7 +20,6 @@ class StackingModel:
             gnb_params (dict): parameters for Gaussian Naive Bayes
             qda_params (dict): parameters for Quadratic Discriminant Analysis
             final_estimator_params (dict): parameters for final estimator (Random Forest)
-            **kwargs: Additional parameters for StackingClassifier
         """
         # Initialize base models with their parameters
         self.base_models = [
@@ -40,8 +39,7 @@ class StackingModel:
             estimators=self.base_models,
             final_estimator=self.final_estimator,
             cv=cv,
-            n_jobs=n_jobs,
-            **kwargs
+            n_jobs=n_jobs
         )
     
     def train(self, X, y):

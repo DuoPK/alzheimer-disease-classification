@@ -34,7 +34,6 @@ warnings.filterwarnings("ignore", category=linalg.LinAlgWarning)
 
 # Model mapping
 MODEL_CLASSES = {
-    # ModelType.NEURAL_NETWORK: NeuralNetworkModel,
     ModelType.SVM: SVCModel,
     ModelType.CATBOOST: CatBoostModel,
     ModelType.XGBOOST: XGBoostModel,
@@ -46,7 +45,6 @@ MODEL_CLASSES = {
     ModelType.STACKING: StackingModel
 }
 
-# Setup logging
 def setup_logging(dataset_name, model_name):
     log_dir = "training/logs"
     os.makedirs(log_dir, exist_ok=True)
@@ -107,12 +105,11 @@ def train_and_evaluate_model(model_type: ModelType, dataset_type: DatasetType):
     optuna_search = OptunaSearch(
         model_class=model_class,
         model_name=model_name,
-        # input_size=X_train.shape[1] if model_type == ModelType.NEURAL_NETWORK else None,
-        # output_size=len(np.unique(y)) if model_type == ModelType.NEURAL_NETWORK else None,
         n_trials=N_TRIALS,
         cv=CV,
         scoring='f1_score',
-        **OPTUNA_PARAMS
+        **OPTUNA_PARAMS,
+        log_default_params=False
     )
     
     # Run hyperparameter optimization
@@ -126,25 +123,12 @@ def train_and_evaluate_model(model_type: ModelType, dataset_type: DatasetType):
     
     # Final training and testing with the best parameters
     logger.info("Starting final training and testing with best parameters")
-    final_train_start = time.time()
     
     model_best_params = optuna_search.best_params_.copy()
-    # Add appropriate multiprocessing parameters based on the model type
-    if model_type == ModelType.XGBOOST:
-        model_best_params.update(XGBOOST_PARAMS)
-    elif model_type == ModelType.CATBOOST:
-        model_best_params.update(CATBOOST_PARAMS)
-    elif model_type == ModelType.SVM:
-        model_best_params.update(MODEL_WITHOUT_N_JOBS_PARAM)
-    elif model_type == ModelType.GAUSSIAN_NB or model_type == ModelType.QDA:
-        pass
-    # elif model_type == ModelType.NEURAL_NETWORK:
-    #     model_best_params['input_size'] = X_train.shape[1]
-    #     model_best_params['output_size'] = len(np.unique(y_train))
-    else:
-        model_best_params.update(SKLEARN_PARAMS)
+    model_all_params = model_type.get_params_from_optuna_params(model_best_params)
     
-    final_model = model_class(**model_best_params)
+    final_model = model_class(**model_all_params)
+    final_train_start = time.time()
     if hasattr(final_model, 'train'):
         final_model.train(X_train, y_train)
     
@@ -158,7 +142,7 @@ def train_and_evaluate_model(model_type: ModelType, dataset_type: DatasetType):
     }
     
     # Save results
-    results_dir = "training/results"
+    results_dir = f"training/results/{datetime.now().strftime('%Y%m%d')}"
     os.makedirs(results_dir, exist_ok=True)
     results_file = f"{results_dir}/{dataset_name}_{model_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     
@@ -174,7 +158,8 @@ def main():
     
     # Train each model on each dataset
     for dataset_type in DatasetType.get_all_datasets():
-        for model_type in ModelType.get_all_models():
+        # for model_type in ModelType.get_all_models():
+        for model_type in MODEL_CLASSES.keys():
             try:
                 train_and_evaluate_model(model_type, dataset_type)
             except Exception as e:
