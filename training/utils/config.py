@@ -27,11 +27,12 @@ def set_random_state():
 
 CV = 5
 TEST_SIZE = 0.2
-N_TRIALS = 15
+N_TRIALS = 25
 SCORING_OPTUNA = 'f1_score'
 
 # Multiprocessing configuration
 N_JOBS = os.cpu_count() - 1  # Leave one CPU free for system processes
+# N_JOBS = 1
 
 # Sklearn specific settings
 SKLEARN_PARAMS = {
