@@ -1,0 +1,7 @@
+dataset,model,best_params,final_test_results-accuracy,final_test_results-f1_score,final_test_results-training_time
+impute_minmax,LogisticRegressionModel,"{""solver"": ""newton-cg"", ""penalty"": ""l2"", ""class_weight"": ""balanced"", ""C"": 0.15876781526924, ""max_iter"": 300}",0.8032786885245902,0.7375,0.012237548828125
+impute_standard,LogisticRegressionModel,"{""solver"": ""saga"", ""penalty"": ""l2"", ""class_weight"": ""balanced"", ""C"": 12.951505461009827, ""max_iter"": 700}",0.8032786885245902,0.7423312883435583,0.14181900024414062
+mean_minmax,LogisticRegressionModel,"{""solver"": ""saga"", ""penalty"": ""l2"", ""class_weight"": ""balanced"", ""C"": 1.4836388722457807, ""max_iter"": 100}",0.8009367681498829,0.7384615384615385,0.046500444412231445
+mean_standard,LogisticRegressionModel,"{""solver"": ""saga"", ""penalty"": ""l2"", ""class_weight"": ""balanced"", ""C"": 12.951505461009827, ""max_iter"": 700}",0.8032786885245902,0.7423312883435583,0.14360976219177246
+median_minmax,LogisticRegressionModel,"{""solver"": ""newton-cg"", ""penalty"": ""l2"", ""class_weight"": ""balanced"", ""C"": 0.15876781526924, ""max_iter"": 300}",0.8032786885245902,0.7375,0.011522293090820312
+median_standard,LogisticRegressionModel,"{""solver"": ""saga"", ""penalty"": ""l2"", ""class_weight"": ""balanced"", ""C"": 12.951505461009827, ""max_iter"": 700}",0.8032786885245902,0.7423312883435583,0.1309514045715332

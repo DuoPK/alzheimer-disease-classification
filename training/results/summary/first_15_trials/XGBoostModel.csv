@@ -1,0 +1,7 @@
+dataset,model,best_params,final_test_results-accuracy,final_test_results-f1_score,final_test_results-training_time
+impute_minmax,XGBoostModel,"{""n_estimators"": 300, ""learning_rate"": 0.021524047893353035, ""max_depth"": 4, ""min_child_weight"": 3}",0.9578454332552693,0.94,0.1745154857635498
+impute_standard,XGBoostModel,"{""n_estimators"": 300, ""learning_rate"": 0.021524047893353035, ""max_depth"": 4, ""min_child_weight"": 3}",0.9578454332552693,0.94,0.19714045524597168
+mean_minmax,XGBoostModel,"{""n_estimators"": 400, ""learning_rate"": 0.013787764619353767, ""max_depth"": 4, ""min_child_weight"": 3}",0.9578454332552693,0.94,0.2300255298614502
+mean_standard,XGBoostModel,"{""n_estimators"": 400, ""learning_rate"": 0.013787764619353767, ""max_depth"": 4, ""min_child_weight"": 3}",0.9578454332552693,0.94,0.190155029296875
+median_minmax,XGBoostModel,"{""n_estimators"": 100, ""learning_rate"": 0.08889667907018929, ""max_depth"": 8, ""min_child_weight"": 5}",0.9531615925058547,0.9333333333333333,0.09363436698913574
+median_standard,XGBoostModel,"{""n_estimators"": 100, ""learning_rate"": 0.08889667907018929, ""max_depth"": 8, ""min_child_weight"": 5}",0.9531615925058547,0.9333333333333333,0.11951279640197754

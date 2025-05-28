@@ -1,0 +1,3 @@
+dataset,model,best_params,final_test_results-accuracy,final_test_results-f1_score,final_test_results-training_time
+impute_standard,LogisticRegressionModel,"{""solver"": ""saga"", ""penalty"": ""l2"", ""class_weight"": ""balanced"", ""C"": 12.951505461009827, ""max_iter"": 700}",0.8032786885245902,0.7423312883435583,0.1398475170135498
+mean_standard,LogisticRegressionModel,"{""solver"": ""saga"", ""penalty"": ""l2"", ""class_weight"": ""balanced"", ""C"": 12.951505461009827, ""max_iter"": 700}",0.8032786885245902,0.7423312883435583,0.141709566116333

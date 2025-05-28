@@ -1,0 +1,7 @@
+dataset,model,best_params,final_test_results-accuracy,final_test_results-f1_score,final_test_results-training_time
+impute_minmax,QuadraticDiscriminantAnalysisModel,"{""reg_param"": 0.0033040476988071}",0.7728337236533958,0.6777408637873754,0.003997802734375
+impute_standard,QuadraticDiscriminantAnalysisModel,"{""reg_param"": 0.14568796578540524}",0.819672131147541,0.7116104868913857,0.0070018768310546875
+mean_minmax,QuadraticDiscriminantAnalysisModel,"{""reg_param"": 0.0033040476988071}",0.7704918032786885,0.6733333333333333,0.0049974918365478516
+mean_standard,QuadraticDiscriminantAnalysisModel,"{""reg_param"": 0.13463204872577222}",0.8243559718969555,0.7211895910780669,0.00900125503540039
+median_minmax,QuadraticDiscriminantAnalysisModel,"{""reg_param"": 0.0033040476988071}",0.7704918032786885,0.6733333333333333,0.003983259201049805
+median_standard,QuadraticDiscriminantAnalysisModel,"{""reg_param"": 0.13463204872577222}",0.8220140515222483,0.7164179104477612,0.0049822330474853516

@@ -1,0 +1,3 @@
+dataset,model,best_params,final_test_results-accuracy,final_test_results-f1_score,final_test_results-training_time
+impute_standard,GaussianNBModel,"{""var_smoothing"": 0.0005061576888752308}",0.7681498829039812,0.6666666666666666,0.004544496536254883
+mean_standard,GaussianNBModel,"{""var_smoothing"": 0.0007350362491999174}",0.7681498829039812,0.6666666666666666,0.001983165740966797

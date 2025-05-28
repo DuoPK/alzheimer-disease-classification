@@ -1,0 +1,7 @@
+model,dataset,f1-score,training_time
+CatBoostModel,impute_standard,0.9368770764119602,0.2300231456756591
+CatBoostModel,mean_standard,0.9368770764119602,0.4804348945617676
+RandomForestModel,mean_standard,0.94,0.1262757778167724
+RandomForestModel,impute_standard,0.9364548494983278,0.8019492626190186
+XGBoostModel,mean_standard,0.94,0.0745096206665039
+XGBoostModel,impute_standard,0.933774834437086,0.1521484851837158
