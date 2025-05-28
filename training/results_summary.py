@@ -104,10 +104,8 @@ def create_summary(input_dir, output_file, time_threshold=1.5, score_threshold=0
 
 
 def main():
-    process_json("training/results", output_dir="results/summary/first_15_trials", summary_table=False)
-    process_json("training/results/20250526", output_dir="results/summary", summary_table=False)
-
-    create_summary("results/summary", "results/summary.csv", time_threshold=1.5, score_threshold=0.01)
+    process_json("training/results/optuna_select-kbest/5-best/20250528_125212", output_dir="results/summary/optuna_select-5-best", summary_table=False)
+    create_summary("results/summary/optuna_select-5-best", "results/summary_optuna_select-5-best.csv", time_threshold=1.5, score_threshold=0.01)
 
 
 if __name__ == "__main__":

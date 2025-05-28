@@ -1,5 +1,5 @@
 from xgboost import XGBClassifier
-from training.hyperparams_search.ModelOptimizer import ModelOptimizer
+from training.hyperparams_search.grid_search.ModelOptimizer import ModelOptimizer
 from training.utils.config import RANDOM_STATE, CV
 
 

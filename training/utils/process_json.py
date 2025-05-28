@@ -16,6 +16,9 @@ def process_json_files(input_dir, output_dir):
             dataset = data.get("dataset", "")
             model = data.get("model", "")
             best_params = data.get("hyperparameter_search", {}).get("best_params", {})
+            # If best_params is empty, use "grid_search" instead of "hyperparameter_search"
+            if not best_params:
+                best_params = data.get("grid_search", {}).get("best_params", {})
             accuracy = data.get("final_test_results", {}).get("metrics", {}).get("accuracy", "")
             f1_score = data.get("final_test_results", {}).get("metrics", {}).get("f1_score", "")
             training_time = data.get("final_test_results", {}).get("training_time", "")

@@ -1,8 +1,8 @@
 catboost_info/
 
-#*.json
-#*.jpg
-#*.png
+*.json
+*.jpg
+*.png
 *.log
 #*.db
 #*.csv
