@@ -1,0 +1,11 @@
+model,dataset,f1-score,training_time
+CatBoostModel,impute_standard,0.9368770764119602,2.4154253005981445
+GaussianNBModel,impute_standard,0.6644295302013423,0.0010015964508056
+LogisticRegressionModel,impute_standard,0.7456445993031359,0.0028989315032958
+QuadraticDiscriminantAnalysisModel,impute_standard,0.7326007326007326,0.0040006637573242
+RandomForestModel,impute_standard,0.9368770764119602,0.5292704105377197
+RandomForestModel,mean_standard,0.9368770764119602,0.8358240127563477
+StackingModel,mean_standard,0.7297297297297297,0.2488138675689697
+SVCModel,mean_standard,0.7755102040816326,0.2225468158721923
+VotingModel,impute_standard,0.7157190635451505,0.013237714767456
+XGBoostModel,impute_standard,0.94,0.0885927677154541
