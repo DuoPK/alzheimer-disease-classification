@@ -56,6 +56,9 @@ class ModelType(Enum):
 
     def get_params_from_optuna_params(self, optuna_params: dict):
         """Convert Optuna parameters to model-specific parameters. Only Stacking and Voting params are different."""
+        # Delete all params with the 'feature_' prefix
+        optuna_params = {k: v for k, v in optuna_params.items() if not k.startswith('feature_')}
+
         base_params = self.base_params.copy()
         if self == ModelType.STACKING:
             # Optuna parameters for Stacking model:      

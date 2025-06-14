@@ -7,7 +7,6 @@ import optuna
 # Random state configuration
 RANDOM_STATE = 42
 
-
 def set_random_state():
     """Set a random state for all libraries"""
     # Python random
@@ -25,10 +24,22 @@ def set_random_state():
         torch.backends.cudnn.benchmark = False
 
 
+# Grid search configuration
+MAX_GRID_SEARCH_COMBINATIONS = 40  # Maximum number of parameter combinations in grid search
+
 CV = 5
 TEST_SIZE = 0.2
-N_TRIALS = 25
+N_TRIALS = 40
 SCORING_OPTUNA = 'f1_score'
+
+SELECT_KBEST = True
+K_BEST = 15  # Number of features to select if using SelectKBest
+
+# Optuna feature selection configuration
+USE_OPTUNA_FEATURE_SELECTION = False  # Whether to use Optuna for feature selection
+MIN_FEATURES_TO_SELECT = 5  # Minimum number of features to select by Optuna
+MAX_FEATURES_TO_SELECT = 20  # Maximum number of features to select by Optuna
+TIME_SCORE_WEIGHT = None  # Weight for time in Optuna scoring
 
 # Multiprocessing configuration
 N_JOBS = os.cpu_count() - 1  # Leave one CPU free for system processes

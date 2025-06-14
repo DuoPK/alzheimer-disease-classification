@@ -1,0 +1,7 @@
+dataset,model,best_params,final_test_results-accuracy,final_test_results-f1_score,final_test_results-training_time
+impute_minmax,CatBoostModel,"{""iterations"": 400, ""learning_rate"": 0.013787764619353767, ""depth"": 4, ""l2_leaf_reg"": 3}",0.955503512880562,0.9368770764119602,0.6159274578094482
+impute_standard,CatBoostModel,"{""iterations"": 400, ""learning_rate"": 0.013787764619353767, ""depth"": 4, ""l2_leaf_reg"": 3}",0.955503512880562,0.9368770764119602,0.6028568744659424
+mean_minmax,CatBoostModel,"{""iterations"": 400, ""learning_rate"": 0.013787764619353767, ""depth"": 4, ""l2_leaf_reg"": 3}",0.9531615925058547,0.9333333333333333,0.6074366569519043
+mean_standard,CatBoostModel,"{""iterations"": 400, ""learning_rate"": 0.013787764619353767, ""depth"": 4, ""l2_leaf_reg"": 3}",0.9531615925058547,0.9333333333333333,0.6528205871582031
+median_minmax,CatBoostModel,"{""iterations"": 300, ""learning_rate"": 0.02742971462047259, ""depth"": 6, ""l2_leaf_reg"": 3}",0.9508196721311475,0.9302325581395349,0.7634906768798828
+median_standard,CatBoostModel,"{""iterations"": 300, ""learning_rate"": 0.02742971462047259, ""depth"": 6, ""l2_leaf_reg"": 3}",0.9508196721311475,0.9302325581395349,0.7305662631988525

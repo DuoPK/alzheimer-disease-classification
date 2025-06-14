@@ -10,15 +10,20 @@ import logging
 from training.utils.ResultsLogger import ResultsLogger
 from training.utils.ClassificationMetrics import ClassificationMetrics
 from training.CrossValidator import CrossValidator
-from training.utils.config import CV, N_TRIALS, RANDOM_STATE, SCORING_OPTUNA
+from training.utils.config import (
+    CV, N_TRIALS, RANDOM_STATE, SCORING_OPTUNA,
+    USE_OPTUNA_FEATURE_SELECTION, MIN_FEATURES_TO_SELECT, MAX_FEATURES_TO_SELECT
+)
+from training.hyperparams_search.default_params import get_default_params
 
 optuna.logging.set_verbosity(optuna.logging.DEBUG)
 
 
 class OptunaSearch:
-    def __init__(self, model_class, model_name, input_size=None, output_size=None, 
+    def __init__(self, model_class, model_name, input_size=None, output_size=None,
                  n_trials=N_TRIALS, cv=CV, scoring=SCORING_OPTUNA, random_state=RANDOM_STATE,
-                 log_default_params=True):
+                 log_default_params=True, use_select_kbest=False, k_best=None, feature_names=None,
+                 time_score_weight=None):
         """
         Parameters:
         - model_class: class of the model to optimize
@@ -29,6 +34,9 @@ class OptunaSearch:
         - cv: number of cross-validation folds
         - scoring: metric to optimize ('accuracy' or 'f1_score')
         - random_state: random seed for reproducibility
+        - use_select_kbest: whether to use SelectKBest for feature selection
+        - k_best: number of features to select if use_select_kbest is True
+        - feature_names: list of feature names for Optuna feature selection
         """
         self.model_class = model_class
         self.model_name = model_name
@@ -42,6 +50,11 @@ class OptunaSearch:
         self.best_score_ = None
         self.trials_ = []
         self.log_default_params = log_default_params
+        self.use_select_kbest = use_select_kbest
+        self.k_best = k_best
+        self.feature_names = feature_names
+        self.time_score_weight = time_score_weight
+        
         results_base_dir_date = datetime.now().strftime('%Y%m%d_%H%M%S')
         if self.log_default_params:
             self.results_logger = ResultsLogger(results_base_dir_date)
@@ -60,47 +73,54 @@ class OptunaSearch:
         
     def _objective(self, trial, X, y):
         """Objective function for Optuna optimization using sklearn CV"""
-        params = None
+        model_params = None
+        feature_params = None
         try:
             # Get parameter suggestions based on the model type
             if self.model_name == 'NeuralNetworkModel':
-                params = self._suggest_neural_network_params(trial)
+                model_params = self._suggest_neural_network_params(trial)
                 # Log neural network structure for each trial
-                model = self.model_class(**params)
+                model = self.model_class(**model_params)
                 self.logger.info(f"\nTrial {len(self.trials_) + 1} - {model.get_model_structure()}")
             elif self.model_name == 'SVCModel':
-                params = self._suggest_svm_params(trial)
+                model_params = self._suggest_svm_params(trial)
             elif self.model_name == 'CatBoostModel':
-                params = self._suggest_catboost_params(trial)
+                model_params = self._suggest_catboost_params(trial)
             elif self.model_name == 'XGBoostModel':
-                params = self._suggest_xgboost_params(trial)
+                model_params = self._suggest_xgboost_params(trial)
             elif self.model_name == 'RandomForestModel':
-                params = self._suggest_random_forest_params(trial)
+                model_params = self._suggest_random_forest_params(trial)
             elif self.model_name == 'LogisticRegressionModel':
-                params = self._suggest_logistic_regression_params(trial)
+                model_params = self._suggest_logistic_regression_params(trial)
             elif self.model_name == 'GaussianNBModel':
-                params = self._suggest_gaussian_nb_params(trial)
+                model_params = self._suggest_gaussian_nb_params(trial)
             elif self.model_name == 'QuadraticDiscriminantAnalysisModel':
-                params = self._suggest_qda_params(trial)
+                model_params = self._suggest_qda_params(trial)
             elif self.model_name == 'VotingModel':
-                params = self._suggest_voting_params(trial)
+                model_params = self._suggest_voting_params(trial)
             elif self.model_name == 'StackingModel':
-                params = self._suggest_stacking_params(trial)
+                model_params = self._suggest_stacking_params(trial)
             else:
                 raise ValueError(f"Unknown model: {self.model_name}")
+            
+            # Add feature selection parameters if enabled
+            if USE_OPTUNA_FEATURE_SELECTION and self.feature_names is not None:
+                feature_params = self._suggest_feature_selection_params(trial)
             
             # Sklearn Cross-validation for optimization
             skf = StratifiedKFold(n_splits=self.cv, shuffle=True, random_state=self.random_state)
             scores = []
 
-            # Create a copy of X and y to avoid modifying original data
-
             for train_idx, val_idx in skf.split(X, y):
                 X_train, X_val = X[train_idx], X[val_idx]
                 y_train, y_val = y[train_idx], y[val_idx]
                 
+                # Apply feature selection if enabled
+                if USE_OPTUNA_FEATURE_SELECTION and self.feature_names is not None:
+                    X_train, X_val = self._apply_feature_selection(X_train, X_val, feature_params)
+                
                 # Initialize and train the model
-                model = self.model_class(**params)
+                model = self.model_class(**model_params)
                 if hasattr(model, 'train'):
                     model.train(np.array(X_train, copy=True), np.array(y_train, copy=True))
                 
@@ -121,22 +141,35 @@ class OptunaSearch:
             std_score = np.std(scores)
             
             # Store trial results
+            trial_params = model_params.copy()
+            if feature_params is not None:
+                trial_params.update(feature_params)
+                
             self.trials_.append({
-                'params': params,
+                'params': trial_params,
                 'mean_score': mean_score,
                 'std_score': std_score,
                 'status': 'success'
             })
-            
+
+            # Add to the score number of selected features if feature selection is used
+            # The fewer selected_features_count, the better; the higher the score the better
+            if USE_OPTUNA_FEATURE_SELECTION and self.feature_names is not None and self.time_score_weight is not None:
+                selected_features_count = sum(1 for v in feature_params.values() if v == 1)
+                mean_score -= selected_features_count * self.time_score_weight
             return mean_score
             
         except Exception as e:
             # Log the error
-            self.logger.error(f"Trial {len(self.trials_) + 1} failed with parameters: {params} because of the following error: {str(e)}")
+            self.logger.error(f"Trial {len(self.trials_) + 1} failed with parameters: {model_params} because of the following error: {str(e)}")
             
             # Store failed trial results
+            trial_params = model_params.copy() if model_params is not None else {}
+            if feature_params is not None:
+                trial_params.update(feature_params)
+                
             self.trials_.append({
-                'params': params,
+                'params': trial_params,
                 'error': str(e),
                 'status': 'failed'
             })
@@ -307,61 +340,7 @@ class OptunaSearch:
     
     def _get_default_params(self):
         """Get default parameters for the model"""
-        if self.model_name == 'NeuralNetworkModel':
-            return {
-                'input_size': self.input_size,
-                'output_size': self.output_size,
-                'hidden_sizes': [64, 32],
-                'learning_rate': 0.001,
-                'batch_size': 32,
-                'epochs': 100,
-                'dropout_rate': 0.2
-            }
-        elif self.model_name == 'SVCModel':
-            return {'C': 1.0, 'kernel': 'rbf', 'gamma': 'scale'}
-        elif self.model_name == 'CatBoostModel':
-            return {'iterations': 100, 'learning_rate': 0.1, 'depth': 6, 'l2_leaf_reg': 3}
-        elif self.model_name == 'XGBoostModel':
-            return {'n_estimators': 100, 'learning_rate': 0.1, 'max_depth': 6, 'min_child_weight': 1}
-        elif self.model_name == 'RandomForestModel':
-            return {
-                'n_estimators': 100,
-                'max_depth': 10,
-                'min_samples_split': 2,
-                'min_samples_leaf': 1,
-                'max_features': 'sqrt',
-                'bootstrap': True,
-                'criterion': 'gini'
-            }
-        elif self.model_name == 'LogisticRegressionModel':
-            return {'C': 1.0, 'max_iter': 1000, 'solver': 'lbfgs', 'penalty': 'l2'}
-        elif self.model_name == 'GaussianNBModel':
-            return {'var_smoothing': 1e-9}
-        elif self.model_name == 'QuadraticDiscriminantAnalysisModel':
-            return {'reg_param': 0.0}
-        elif self.model_name == 'VotingModel':
-            return {
-                'voting': 'soft',
-                'weights': [1.0, 1.0, 1.0],
-                'lr_params': {'C': 1.0, 'max_iter': 1000},
-                'gnb_params': {'var_smoothing': 1e-9},
-                'qda_params': {'reg_param': 0.0}
-            }
-        elif self.model_name == 'StackingModel':
-            return {
-                'cv': 5,
-                'lr_params': {'C': 1.0, 'max_iter': 1000},
-                'gnb_params': {'var_smoothing': 1e-9},
-                'qda_params': {'reg_param': 0.0},
-                'final_estimator_params': {
-                    'n_estimators': 100,
-                    'max_depth': 5,
-                    'min_samples_split': 2,
-                    'min_samples_leaf': 1
-                }
-            }
-        else:
-            raise ValueError(f"Unknown model: {self.model_name}")
+        return get_default_params(self.model_name, self.input_size, self.output_size)
 
     def _evaluate_default_params(self, X, y, dataset_name):
         """Evaluate the model with default parameters using both custom and sklearn CV"""
@@ -428,11 +407,56 @@ class OptunaSearch:
         
         return default_params
 
+    def _suggest_feature_selection_params(self, trial):
+        """Suggest feature selection parameters for Optuna"""
+        feature_params = {}
+        
+        # Suggest binary parameters for all features in feature_names
+        for feature in self.feature_names:
+            feature_params[f'feature_{feature}'] = trial.suggest_categorical(f'feature_{feature}', [0, 1])
+        
+        return feature_params
+    
+    def _apply_feature_selection(self, X_train, X_val, feature_params):
+        """Apply feature selection based on Optuna parameters"""
+        # Get selected feature indices
+        selected_indices = []
+        for i, feature in enumerate(self.feature_names):
+            param_name = f'feature_{feature}'
+            if param_name in feature_params and feature_params[param_name] == 1:
+                selected_indices.append(i)
+        
+        # Ensure a minimum number of features
+        if len(selected_indices) < MIN_FEATURES_TO_SELECT:
+            # If too few features selected, add some randomly
+            remaining_indices = [i for i in range(len(self.feature_names)) if i not in selected_indices]
+            additional_indices = np.random.choice(
+                remaining_indices,
+                size=MIN_FEATURES_TO_SELECT - len(selected_indices),
+                replace=False
+            )
+            selected_indices.extend(additional_indices)
+        
+        # Apply selection
+        X_train_selected = X_train[:, selected_indices]
+        X_val_selected = X_val[:, selected_indices]
+        
+        return X_train_selected, X_val_selected
+
     def fit(self, X, y, dataset_name):
         """Find the best parameters using Optuna optimization"""
         # Create study and enqueue default parameters trial
+
+        storage_name = "sqlite:///alzheimer_classification_v3.db"
+        # Add k_best to the storage name if specified
+        if self.use_select_kbest and self.k_best is not None:
+            storage_name = storage_name.replace('.db', f'_select-{self.k_best}-best.db')
+        # Add feature selection to storage name if enabled
+        if USE_OPTUNA_FEATURE_SELECTION:
+            storage_name = storage_name.replace('.db', '_optuna-feature-selection.db')
+            
         study = optuna.create_study(direction='maximize',
-                                    storage="sqlite:///alzheimer_classification_v2.db",
+                                    storage=storage_name,
                                     load_if_exists=True,
                                     study_name=f"{self.model_name}_{dataset_name}",
                                     sampler=TPESampler(seed=self.random_state))
@@ -443,6 +467,12 @@ class OptunaSearch:
             default_params = self._evaluate_default_params(X, y, dataset_name)
         else:
             default_params = self._get_default_params()
+            
+        # Add feature selection parameters to default params if enabled
+        if USE_OPTUNA_FEATURE_SELECTION and self.feature_names is not None:
+            for feature in self.feature_names:
+                default_params[f'feature_{feature}'] = 1
+                
         self.logger.info("Add default parameters before optimization...")
         study.enqueue_trial(default_params)
         

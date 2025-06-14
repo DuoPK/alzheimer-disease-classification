@@ -1,0 +1,7 @@
+dataset,model,best_params,final_test_results-accuracy,final_test_results-f1_score,final_test_results-training_time
+impute_minmax,SVCModel,"{""C"": 0.5611516415334505, ""kernel"": ""linear"", ""gamma"": ""scale""}",0.819672131147541,0.7335640138408305,0.10962104797363281
+impute_standard,SVCModel,"{""C"": 5.3994844097874335, ""kernel"": ""rbf"", ""gamma"": ""auto""}",0.8360655737704918,0.7619047619047619,0.2645292282104492
+mean_minmax,SVCModel,"{""C"": 8.971270805430315, ""kernel"": ""linear"", ""gamma"": 0.1}",0.8149882903981265,0.726643598615917,0.39252686500549316
+mean_standard,SVCModel,"{""C"": 5.3994844097874335, ""kernel"": ""rbf"", ""gamma"": ""auto""}",0.8337236533957846,0.7593220338983051,0.4905424118041992
+median_minmax,SVCModel,"{""C"": 4.138040112561017, ""kernel"": ""linear"", ""gamma"": ""scale""}",0.8149882903981265,0.726643598615917,0.25107884407043457
+median_standard,SVCModel,"{""C"": 5.3994844097874335, ""kernel"": ""rbf"", ""gamma"": ""auto""}",0.8360655737704918,0.7635135135135135,0.26700425148010254

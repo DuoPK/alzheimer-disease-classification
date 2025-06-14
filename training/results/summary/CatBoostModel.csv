@@ -1,0 +1,3 @@
+dataset,model,best_params,final_test_results-accuracy,final_test_results-f1_score,final_test_results-training_time
+impute_standard,CatBoostModel,"{""iterations"": 500, ""learning_rate"": 0.07506539928118568, ""depth"": 8, ""l2_leaf_reg"": 5}",0.9578454332552693,0.94,3.551461935043335
+mean_standard,CatBoostModel,"{""iterations"": 400, ""learning_rate"": 0.013787764619353767, ""depth"": 4, ""l2_leaf_reg"": 3}",0.9531615925058547,0.9333333333333333,0.6028487682342529
