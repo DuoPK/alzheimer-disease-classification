@@ -1,0 +1,308 @@
+{
+    "dataset": "mean_standard",
+    "model": "LogisticRegressionModel",
+    "hyperparameter_search": {
+        "best_params": {
+            "solver": "saga",
+            "penalty": "l2",
+            "class_weight": "balanced",
+            "C": 12.951505461009827,
+            "max_iter": 700
+        },
+        "best_score": 0.7713398972198939,
+        "trials": [
+            {
+                "params": {
+                    "solver": "lbfgs",
+                    "penalty": "l2",
+                    "class_weight": "balanced",
+                    "C": 1.0,
+                    "max_iter": 1000
+                },
+                "mean_score": 0.7665397053017,
+                "std_score": 0.03394286771431973,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l2",
+                    "class_weight": "balanced",
+                    "C": 11.259511292739681,
+                    "max_iter": 1400
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "elasticnet",
+                    "class_weight": "balanced",
+                    "C": 0.0011638142281027615,
+                    "max_iter": 600,
+                    "l1_ratio": 0.5498434324761732
+                },
+                "mean_score": 0.4185131627734521,
+                "std_score": 0.2092614122219641,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l1",
+                    "class_weight": "balanced",
+                    "C": 11.049225989506267,
+                    "max_iter": 100
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "sag",
+                    "penalty": "l2",
+                    "class_weight": "balanced",
+                    "C": 9.064558607020032,
+                    "max_iter": 700
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l2",
+                    "class_weight": "balanced",
+                    "C": 87.70186475499526,
+                    "max_iter": 100
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l2",
+                    "class_weight": "balanced",
+                    "C": 15.315752598862373,
+                    "max_iter": 1300
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l2",
+                    "class_weight": "balanced",
+                    "C": 3.554015489332064,
+                    "max_iter": 1400
+                },
+                "mean_score": 0.7702221591371753,
+                "std_score": 0.03334434345584066,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l2",
+                    "class_weight": "balanced",
+                    "C": 22.91250953545999,
+                    "max_iter": 1200
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l2",
+                    "class_weight": "balanced",
+                    "C": 6.185193572185314,
+                    "max_iter": 1600
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l2",
+                    "class_weight": "balanced",
+                    "C": 81.92770396891602,
+                    "max_iter": 2000
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l1",
+                    "class_weight": "balanced",
+                    "C": 23.240249887037937,
+                    "max_iter": 700
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": null,
+                "error": "",
+                "status": "failed"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": null,
+                    "class_weight": "balanced",
+                    "C": 0.49459041467770704,
+                    "max_iter": 600
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l2",
+                    "class_weight": "balanced",
+                    "C": 1.6440324446994838,
+                    "max_iter": 900
+                },
+                "mean_score": 0.7685939528578063,
+                "std_score": 0.0339750345451265,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l2",
+                    "class_weight": "balanced",
+                    "C": 13.705436229853442,
+                    "max_iter": 1100
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l1",
+                    "class_weight": "balanced",
+                    "C": 10.386444979852643,
+                    "max_iter": 100
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l1",
+                    "class_weight": "balanced",
+                    "C": 43.21859806110916,
+                    "max_iter": 500
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": null,
+                "error": "",
+                "status": "failed"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l1",
+                    "class_weight": "balanced",
+                    "C": 20.81188886771511,
+                    "max_iter": 1200
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": null,
+                "error": "",
+                "status": "failed"
+            },
+            {
+                "params": {
+                    "solver": "saga",
+                    "penalty": "l1",
+                    "class_weight": "balanced",
+                    "C": 2.6237530328171177,
+                    "max_iter": 800
+                },
+                "mean_score": 0.7695522294629196,
+                "std_score": 0.031359919464888836,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "liblinear",
+                    "penalty": "l2",
+                    "class_weight": null,
+                    "C": 0.6715317152119998,
+                    "max_iter": 1600
+                },
+                "mean_score": 0.7603884284403397,
+                "std_score": 0.023987317852256627,
+                "status": "success"
+            },
+            {
+                "params": {
+                    "solver": "newton-cg",
+                    "penalty": null,
+                    "class_weight": "balanced",
+                    "C": 36.1750979083574,
+                    "max_iter": 1500
+                },
+                "mean_score": 0.7713398972198939,
+                "std_score": 0.0316295619167971,
+                "status": "success"
+            },
+            {
+                "params": null,
+                "error": "",
+                "status": "failed"
+            }
+        ]
+    },
+    "custom_cv_results": {},
+    "sklearn_cv_results": {},
+    "final_test_results": {
+        "metrics": {
+            "accuracy": 0.8032786885245902,
+            "f1_score": 0.7423312883435583,
+            "confusion_matrix": [
+                [
+                    222,
+                    54
+                ],
+                [
+                    30,
+                    121
+                ]
+            ]
+        },
+        "training_time": 0.141709566116333
+    }
+}
